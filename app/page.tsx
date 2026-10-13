@@ -1,5 +1,6 @@
 import Hero from "@/components/Hero";
 import Navigation from "@/components/Navigation";
+import Promises from "@/components/Promises";
 import ProjectShowcase from "@/components/ProjectShowcase";
 import StudioWall from "@/components/StudioWall";
 
@@ -11,6 +12,7 @@ export default function Home() {
         <Hero />
         <StudioWall />
         <ProjectShowcase />
+        <Promises />
       </main>
     </>
   );
