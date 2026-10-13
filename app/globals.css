@@ -3,25 +3,113 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --ground: #f4f2eb;
+  --ground-2: #e7e4db;
+  --ink: #1d1c1a;
+  --body: #4a4740;
+  --muted: #6b665c;
+  --line: rgba(29, 28, 26, 0.14);
+  --accent: #2b3a55;
+  --on-dark: #cfc9bc;
+  --serif: var(--font-instrument), Georgia, serif;
+  --sans: var(--font-hanken), system-ui, sans-serif;
+  --pad: clamp(16px, 2.2vw, 32px);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* Lenis */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+@layer base {
+  body {
+    @apply overflow-x-hidden bg-ground font-sans text-base leading-[1.6] text-ink antialiased;
+  }
+  a {
+    color: inherit;
+  }
+  :focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 4px;
+  }
+  em {
+    font-style: italic;
   }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  .cap {
+    @apply text-[11px] uppercase tracking-[.24em];
+  }
+
+  /* Masked line: the inner span slides up from below the mask. */
+  .ln {
+    @apply -mb-[.06em] block overflow-hidden pb-[.06em];
+  }
+  .ln > span {
+    @apply block;
+  }
+
+  .hbtn {
+    @apply inline-flex min-h-[44px] cursor-pointer items-center gap-2.5 rounded-full border border-current bg-transparent px-5 text-xs uppercase tracking-[.18em] no-underline;
+  }
+
+  .pill {
+    @apply inline-flex min-h-[48px] items-center rounded-full px-6 text-xs uppercase tracking-[.18em] no-underline transition-colors duration-300;
+  }
+  .pill-light {
+    @apply bg-ground text-ink hover:bg-white;
+  }
+  .pill-line {
+    @apply border border-current hover:bg-ink hover:text-ground;
+  }
+  .pill-dark {
+    @apply bg-ink text-ground hover:bg-[#38352f];
+  }
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+/* ───────── intro: pre-paint state, set by the inline script in <head> when
+   the intro will play. Without the class everything renders final. */
+html.intro {
+  overflow: hidden;
+}
+html.intro .site-header {
+  opacity: 0;
+  visibility: hidden;
+}
+html.intro .hero-media {
+  clip-path: inset(37% 41.5% 37% 41.5% round 3px);
+}
+html.intro .hero-media img {
+  opacity: 0;
+  visibility: hidden;
+}
+html.intro .hero-media .hero-cycle:first-child img {
+  opacity: 1;
+  visibility: visible;
+}
+html.intro .hero-final {
+  transform: scale(1.35);
+}
+html.intro .hero-shade {
+  opacity: 0;
+}
+html.intro .hero-ln > span {
+  transform: translateY(110%);
+}
+html.intro .hero-fade {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(14px);
+}
+html:not(.intro) .intro-ui,
+html:not(.intro) .hero-cycle {
+  display: none;
 }
