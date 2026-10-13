@@ -35,7 +35,7 @@ export const site = {
   title: "Fresca Interior Design | San Diego",
   description:
     "Fresca is a residential interior design studio in San Diego designing kitchens, bathrooms and whole homes from the floor plan up.",
-  ogImage: { src: img("og-image"), width: 944, height: 494, alt: "White shaker kitchen with a black range hood and marble island" },
+  ogImage: { url: img("og-image"), width: 944, height: 494, alt: "White shaker kitchen with a black range hood and marble island" },
   location: "San Diego, California",
   phone: { label: "(858) 555-0142", href: "tel:+18585550142" }, // DEMO: placeholder phone number
   email: "hello@frescainteriordesign.com", // DEMO: placeholder email

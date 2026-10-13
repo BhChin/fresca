@@ -86,8 +86,9 @@ export default function Navigation() {
       <div
         ref={menuRef}
         id="menu"
-        // Rendered inert on the server too, before the effect above runs.
-        {...{ inert: "" }}
+        // Rendered inert on the server too, before the effect above runs. React 18
+        // only renders the attribute from a string, though the types say boolean.
+        {...({ inert: "" } as object)}
         className={`fixed inset-0 z-[60] flex flex-col bg-ink px-pad pb-8 pt-5 text-ground transition-[clip-path] duration-[900ms] ease-curtain ${
           open ? "[clip-path:inset(0_0_0_0)]" : "[clip-path:inset(0_0_100%_0)]"
         }`}

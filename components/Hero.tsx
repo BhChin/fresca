@@ -93,7 +93,8 @@ export default function Hero() {
         {/* Intro-only photos: display:none (and so never loaded) once the intro has played. */}
         {hero.cycle.map((src) => (
           <div key={src} className="hero-cycle absolute inset-0">
-            <Image src={src} alt="" fill sizes="100vw" quality={85} className="object-cover" />
+            {/* Only ever seen inside the small intro frame (~17vw wide). */}
+            <Image src={src} alt="" fill sizes="20vw" quality={85} className="object-cover" />
           </div>
         ))}
         <Image
