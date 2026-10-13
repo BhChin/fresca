@@ -1,3 +1,4 @@
+import Approach from "@/components/Approach";
 import Hero from "@/components/Hero";
 import Navigation from "@/components/Navigation";
 import Promises from "@/components/Promises";
@@ -13,6 +14,7 @@ export default function Home() {
         <StudioWall />
         <ProjectShowcase />
         <Promises />
+        <Approach />
       </main>
     </>
   );
