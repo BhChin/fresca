@@ -3,6 +3,7 @@ import { Hanken_Grotesk, Instrument_Serif } from "next/font/google";
 import SmoothScroll from "@/components/SmoothScroll";
 import { site } from "@/content/site";
 import { introScript } from "@/lib/intro";
+import { siteUrl } from "@/lib/site-url";
 import "./globals.css";
 
 const serif = Instrument_Serif({
@@ -21,7 +22,7 @@ const sans = Hanken_Grotesk({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(site.url),
+  metadataBase: new URL(siteUrl),
   title: site.title,
   description: site.description,
   alternates: { canonical: "/" },

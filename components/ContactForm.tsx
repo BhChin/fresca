@@ -2,7 +2,8 @@
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { contact } from "@/content/site";
-import { contactSchema, HONEYPOT, type ContactField } from "@/lib/contact";
+import type { ContactField } from "@/lib/contact";
+import { HONEYPOT } from "@/lib/honeypot";
 
 type Errors = Partial<Record<ContactField, string>>;
 type Status = "idle" | "sending" | "sent" | "error";
@@ -13,8 +14,11 @@ const FIELDS: { name: ContactField; type?: string; autoComplete?: string; multil
   { name: "message", multiline: true },
 ];
 
-function fieldErrors(values: Record<string, unknown>): Errors {
-  const result = contactSchema.safeParse(values);
+// zod is only needed once someone uses the form, so keep it out of the first load.
+const loadSchema = () => import("@/lib/contact").then((m) => m.contactSchema);
+
+async function fieldErrors(values: Record<string, unknown>): Promise<Errors> {
+  const result = (await loadSchema()).safeParse(values);
   if (result.success) return {};
   const errors: Errors = {};
   for (const issue of result.error.issues) {
@@ -38,9 +42,9 @@ export default function ContactForm() {
   const values = () => Object.fromEntries(new FormData(formRef.current!)) as Record<string, string>;
 
   // Inline validation: check a field once it has been visited, and keep it live after that.
-  const revalidate = (field: ContactField, force = false) => {
+  const revalidate = async (field: ContactField, force = false) => {
     if (!force && !touched[field]) return;
-    const message = fieldErrors(values())[field];
+    const message = (await fieldErrors(values()))[field];
     setErrors((prev) => ({ ...prev, [field]: message }));
   };
 
@@ -48,7 +52,7 @@ export default function ContactForm() {
     e.preventDefault();
     if (status === "sending") return;
     const data = values();
-    const found = fieldErrors(data);
+    const found = await fieldErrors(data);
     setTouched({ name: true, email: true, message: true });
     setErrors(found);
     const firstInvalid = FIELDS.find((f) => found[f.name]);
@@ -110,6 +114,7 @@ export default function ContactForm() {
             revalidate(f.name, true);
           },
           onChange: () => revalidate(f.name),
+          onFocus: loadSchema,
           className: `${input} ${error ? "border-error" : "border-ground/30"}`,
         };
         return (

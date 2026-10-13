@@ -9,7 +9,7 @@ import { useSmoothScroll } from "./SmoothScroll";
 function Wordmark({ label }: { label?: string }) {
   return (
     <a href="#top" aria-label={label} className="flex flex-col leading-none no-underline">
-      <b className="font-serif text-[32px] font-normal italic">Fresca</b>
+      <b className="font-serif text-[32px] font-normal italic">Fresca</b>{" "}
       <span className="mt-[3px] text-[9px] uppercase tracking-[.36em]">Interior Design</span>
     </a>
   );

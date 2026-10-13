@@ -14,5 +14,4 @@ export const contactSchema = z.object({
 export type ContactInput = z.infer<typeof contactSchema>;
 export type ContactField = keyof ContactInput;
 
-/** Hidden field real visitors never fill in. */
-export const HONEYPOT = "company";
+export { HONEYPOT } from "./honeypot";

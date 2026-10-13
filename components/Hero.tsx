@@ -91,10 +91,12 @@ export default function Hero() {
     <section ref={root} id="top" className="relative h-svh min-h-[560px] overflow-hidden bg-ground">
       <div className="hero-media absolute inset-0 overflow-hidden will-change-[clip-path]">
         {/* Intro-only photos: display:none (and so never loaded) once the intro has played. */}
-        {hero.cycle.map((src) => (
+        {hero.cycle.map((src, i) => (
           <div key={src} className="hero-cycle absolute inset-0">
-            {/* Only ever seen inside the small intro frame (~17vw wide). */}
-            <Image src={src} alt="" fill sizes="20vw" quality={85} className="object-cover" />
+            {/* Seen only inside the small intro frame (~17vw wide). The first one paints
+                before hydration and is the page's LCP, so it is preloaded at full width
+                (repeat visits skip the intro but are in the same session, so it's cached). */}
+            <Image src={src} alt="" fill priority={i === 0} sizes={i === 0 ? "100vw" : "20vw"} quality={85} className="object-cover" />
           </div>
         ))}
         <Image
