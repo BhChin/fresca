@@ -106,7 +106,7 @@ export default function Hero() {
           priority
           sizes="100vw"
           quality={85}
-          className="hero-final scale-[1.06] object-cover"
+          className="hero-final scale-[1.06] object-cover object-[40%_50%]"
         />
         <div className="hero-shade absolute inset-0 bg-[rgba(18,17,15,.38)]" />
       </div>

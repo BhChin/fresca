@@ -42,3 +42,6 @@ next-env.d.ts
 
 # rendered reference pages (large, images inlined)
 /reference/fresca-homepage-*.html
+/reference/upscaled-raw/
+/reference/upscaled/
+__pycache__/

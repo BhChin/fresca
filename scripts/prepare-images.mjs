@@ -1,18 +1,22 @@
-// One-off: copy the photos the design uses from the client folder into
-// public/images/ with descriptive names, flattened to RGB JPEG.
+// Copy the photos the design uses into public/images/ with descriptive names,
+// flattened to RGB JPEG.
 //
 //   node scripts/prepare-images.mjs ["/path/to/FRESCA PHOTOS"]
 //
-// Never resizes, so files are only ever as large as the originals. When the
-// client sends higher-res photos, re-run this (or drop files with the same
-// names into public/images/) and nothing else needs to change.
-import { mkdir } from "node:fs/promises";
+// Each photo comes from reference/upscaled/<n>.jpg when there is one (see
+// scripts/match-upscales.py and scripts/copy-upscales.mjs), otherwise from the
+// client's original <n>.png. Never enlarges. Files aim to stay under ~600 KB:
+// JPEG quality steps down from 88 to 78, then the long edge shrinks if needed.
+// next/image serves AVIF/WebP at the right size from these sources.
+import { access, mkdir, writeFile } from "node:fs/promises";
 import { homedir } from "node:os";
 import path from "node:path";
 import sharp from "sharp";
 
 const SRC = process.argv[2] ?? path.join(homedir(), "Downloads", "FRESCA PHOTOS");
+const UPSCALED = path.resolve("reference/upscaled");
 const OUT = path.resolve("public/images");
+const BUDGET = 600 * 1024;
 
 // Keep in sync with the IMAGE MAP comment in content/site.ts.
 const MAP = {
@@ -43,9 +47,14 @@ const MAP = {
   44: "sectional-living-room",
 };
 
+// Drawings and design boards are never upscaled.
+const BOARDS = new Set([21, 23, 24, 25]);
+
 // Design-board screenshots whose top/bottom bands are fully transparent and
 // would render as black bars once flattened. Crop them to the opaque area.
 const TRIM_TRANSPARENT = new Set([23, 24]);
+
+const exists = (f) => access(f).then(() => true, () => false);
 
 async function opaqueBox(file) {
   const { data, info } = await sharp(file).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
@@ -64,27 +73,51 @@ async function opaqueBox(file) {
   return { left, top, width: right - left + 1, height: bottom - top + 1 };
 }
 
-await mkdir(OUT, { recursive: true });
-
-for (const [n, name] of Object.entries(MAP)) {
-  const file = path.join(SRC, `${n}.png`);
-  let img = sharp(file);
-  if (TRIM_TRANSPARENT.has(Number(n))) img = img.extract(await opaqueBox(file));
-  const out = path.join(OUT, `${name}.jpg`);
-  const info = await img
-    .flatten({ background: "#ffffff" })
-    .toColourspace("srgb")
-    .jpeg({ quality: 90, mozjpeg: true })
-    .toFile(out);
-  console.log(`${n}.png → images/${name}.jpg  ${info.width}×${info.height}`);
+/** Source for photo n: the upscale if there is one, else the original PNG. */
+async function source(n) {
+  const up = path.join(UPSCALED, `${n}.jpg`);
+  if (!BOARDS.has(n) && (await exists(up))) return { file: up, label: `upscaled/${n}.jpg` };
+  return { file: path.join(SRC, `${n}.png`), label: `${n}.png` };
 }
 
-// Open Graph card: the hero kitchen cropped to ~1.91:1 (no upscaling).
-const og = await sharp(path.join(SRC, "1.png")).metadata();
-const ogH = Math.round(og.width / 1.91);
-await sharp(path.join(SRC, "1.png"))
-  .extract({ left: 0, top: Math.round((og.height - ogH) / 2), width: og.width, height: ogH })
-  .flatten({ background: "#ffffff" })
+/** RGB pipeline for photo n, before encoding. */
+async function pipeline(n, file) {
+  let img = sharp(file);
+  if (TRIM_TRANSPARENT.has(n)) img = img.extract(await opaqueBox(file));
+  return img.flatten({ background: "#ffffff" }).toColourspace("srgb");
+}
+
+/** Encode under the size budget: lower quality first, then the long edge. */
+async function encode(n, file) {
+  const { width, height } = await (await pipeline(n, file)).toBuffer({ resolveWithObject: true }).then((r) => r.info);
+  let edge = Math.max(width, height);
+  for (;;) {
+    for (const quality of [88, 85, 82, 80, 78]) {
+      const img = (await pipeline(n, file)).resize({ width: edge, height: edge, fit: "inside", withoutEnlargement: true });
+      const { data, info } = await img.jpeg({ quality, mozjpeg: true }).toBuffer({ resolveWithObject: true });
+      if (data.length <= BUDGET || (quality === 78 && edge <= 1600)) return { data, info, quality };
+    }
+    edge = Math.round(edge * 0.9);
+  }
+}
+
+await mkdir(OUT, { recursive: true });
+
+for (const [key, name] of Object.entries(MAP)) {
+  const n = Number(key);
+  const { file, label } = await source(n);
+  const { data, info, quality } = await encode(n, file);
+  await writeFile(path.join(OUT, `${name}.jpg`), data);
+  console.log(`${label.padEnd(16)} → images/${name}.jpg  ${info.width}×${info.height}  q${quality}  ${(data.length / 1024).toFixed(0)} KB`);
+}
+
+// Open Graph card: the hero kitchen cropped to 1.91:1, 1200px wide at most.
+const hero = await source(1);
+const meta = await (await pipeline(1, hero.file)).toBuffer({ resolveWithObject: true }).then((r) => r.info);
+const ogH = Math.round(meta.width / 1.91);
+const og = await (await pipeline(1, hero.file))
+  .extract({ left: 0, top: Math.round((meta.height - ogH) / 2), width: meta.width, height: ogH })
+  .resize({ width: 1200, withoutEnlargement: true })
   .jpeg({ quality: 85, mozjpeg: true })
   .toFile(path.join(OUT, "og-image.jpg"));
-console.log(`og-image.jpg  ${og.width}×${ogH}`);
+console.log(`og-image.jpg  ${og.width}×${og.height}  ${(og.size / 1024).toFixed(0)} KB`);
