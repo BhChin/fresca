@@ -94,22 +94,23 @@ export const hero = {
   },
 };
 
-// ───────── studio wall (exhibition layout, v6 12-column grid)
-// x/y/w are percentages of the wall on desktop (one column = 8.333%); speed is
-// the drift multiplier. `right` items align right in the mobile single column.
-// Order = mobile order. Values are copied exactly from the v6 design source.
+// ───────── studio wall (exhibition layout)
+// Layout (positions, widths, drift speeds, section height) follows the v5 design;
+// the drafting layer on top (grid, ruler, dimension lines, callouts, grid
+// coordinates) comes from v6. x/y/w are percentages of the wall on desktop;
+// speed is the drift multiplier. `right` items align right in the mobile single
+// column. Order = mobile order.
 
 type WallWord = { kind: "word"; text: string; italic?: boolean; x: string; y: string; speed: number; right?: boolean };
 /** Dimension line: horizontal above the frame, or vertical on its left/right. */
 type WallDim = { dir: "h" | "v"; side?: "l" | "r"; label: string };
 /** Callout: a dot at px/py on the photo with a leader line of `len` to a label. */
-type WallCallout = { side: "l" | "r"; px: string; py: string; len: string; text: string };
+type WallCallout = { side: "l" | "r"; px: string; py: string; len: string; maxLen?: string; text: string };
 type WallPlate = {
   kind: "plate";
   no: string;
   title: string;
   city: string; // DEMO: project cities are placeholders
-  coord: string; // grid column/row of the plate, e.g. C06·R01
   src: string;
   ratio: string;
   x: string;
@@ -120,7 +121,8 @@ type WallPlate = {
   dim?: WallDim;
   callout?: WallCallout;
 };
-type WallText = { kind: "text"; text: string; link?: { href: string; label: string }; x: string; y: string; speed: number };
+/** maxWidth keeps a paragraph clear of the photo to its right at narrow widths. */
+type WallText = { kind: "text"; text: string; link?: { href: string; label: string }; x: string; y: string; speed: number; maxWidth: string };
 export type WallItem = WallWord | WallPlate | WallText;
 
 export const studio = {
@@ -129,6 +131,10 @@ export const studio = {
   columns: 12,
   /** Ruler labels down the left margin: 00–19, one every 5% of the wall. */
   rulerMarks: 20,
+  /** Section height on desktop. */
+  height: "225vh",
+  /** Drift distance per unit of speed, as a fraction of the viewport height. */
+  drift: 0.24,
   /** Registration marks on grid intersections, centered on the point. */
   marks: [
     { x: "calc(25% - 7px)", y: "calc(10% - 7px)" },
@@ -137,59 +143,62 @@ export const studio = {
     { x: "calc(8.333% - 7px)", y: "calc(95% - 7px)" },
   ],
   items: [
-    { kind: "word", text: "A fresh", x: "0%", y: "14%", speed: 0.5 },
+    { kind: "word", text: "A fresh", x: "3%", y: "11%", speed: 0.55 },
     {
-      kind: "plate", no: "Pl. 01", title: "Black-Hood Kitchen", city: "Rancho Bernardo", coord: "C06·R01",
-      src: img("black-hood-kitchen-island"), ratio: "4/5", x: "41.667%", y: "7%", w: "25.000%", speed: 1.1,
-      dim: { dir: "h", label: "3 COL · 4 : 5" },
-      callout: { side: "l", px: "50%", py: "26%", len: "260px", text: "Glass pendants ×3" },
+      kind: "plate", no: "Pl. 01", title: "Black-Hood Kitchen", city: "Rancho Bernardo",
+      src: img("black-hood-kitchen-island"), ratio: "4/5", x: "42%", y: "7%", w: "21%", speed: 1.25,
+      dim: { dir: "h", label: "2.5 COL · 4 : 5" },
+      // maxLen keeps the label clear of "A fresh" below ~1440px wide.
+      callout: { side: "l", px: "50%", py: "26%", len: "260px", maxLen: "calc(29vw - 150px)", text: "Glass pendants ×3" },
     },
     {
-      kind: "plate", no: "Pl. 02", title: "Blush Guest Bedroom", city: "Poway", coord: "C10·R03",
-      src: img("blush-guest-bedroom"), ratio: "3/4", x: "75.000%", y: "16%", w: "16.667%", speed: 1.5, right: true,
+      kind: "plate", no: "Pl. 02", title: "Blush Guest Bedroom", city: "Poway",
+      src: img("blush-guest-bedroom"), ratio: "3/4", x: "79%", y: "17%", w: "13%", speed: 1.9, right: true,
     },
-    { kind: "word", text: "home,", x: "58.333%", y: "35%", speed: 0.7, right: true },
+    { kind: "word", text: "home,", x: "62%", y: "35%", speed: 0.85, right: true },
     {
-      kind: "plate", no: "Pl. 03", title: "Navy Double Vanity", city: "Carmel Valley", coord: "C02·R07",
-      src: img("navy-double-vanity"), ratio: "3/4", x: "8.333%", y: "35%", w: "16.667%", speed: 1.3,
+      kind: "plate", no: "Pl. 03", title: "Navy Double Vanity", city: "Carmel Valley",
+      src: img("navy-double-vanity"), ratio: "3/4", x: "7%", y: "35%", w: "15%", speed: 1.45,
       dim: { dir: "v", side: "l", label: "3 : 4" },
     },
     {
       kind: "text",
       text: "Fresca is a residential design studio in San Diego. We design kitchens, baths and whole homes around how you actually live in them.",
-      x: "25.000%",
-      y: "46%",
-      speed: 0.9,
+      x: "30%",
+      y: "45%",
+      speed: 1,
+      maxWidth: "min(330px, calc(31% - 20px))", // plate 4 starts at 61%
     },
     {
-      kind: "plate", no: "Pl. 04", title: "Two-Story Living Room", city: "Carmel Valley", coord: "C08·R10",
-      src: img("two-story-living-room"), ratio: "4/5", x: "58.333%", y: "50%", w: "25.000%", speed: 1.0, right: true,
+      kind: "plate", no: "Pl. 04", title: "Two-Story Living Room", city: "Carmel Valley",
+      src: img("two-story-living-room"), ratio: "4/5", x: "61%", y: "50%", w: "25%", speed: 1.05, right: true,
       dim: { dir: "h", label: "3 COL · 4 : 5" },
       callout: { side: "r", px: "80%", py: "84%", len: "110px", text: "Linen sectional" },
     },
-    { kind: "word", text: "considered.", italic: true, x: "0%", y: "61%", speed: 0.6 },
+    { kind: "word", text: "considered.", italic: true, x: "2%", y: "61%", speed: 0.7 },
     {
-      kind: "plate", no: "Pl. 05", title: "Orb Pendant Kitchen", city: "Poway", coord: "C06·R15",
-      src: img("blue-gray-island-kitchen"), ratio: "1/1", x: "41.667%", y: "74%", w: "16.667%", speed: 1.5,
+      kind: "plate", no: "Pl. 05", title: "Orb Pendant Kitchen", city: "Poway",
+      src: img("blue-gray-island-kitchen"), ratio: "1/1", x: "47%", y: "74%", w: "13%", speed: 1.8,
       callout: { side: "l", px: "45%", py: "70%", len: "165px", text: "Blue-gray island" },
     },
     {
-      kind: "plate", no: "Pl. 06", title: "Walnut Guest Bath", city: "Encinitas", coord: "C11·R15",
-      src: img("walnut-guest-bath"), ratio: "3/4", x: "83.333%", y: "76%", w: "16.667%", speed: 1.35, right: true,
+      kind: "plate", no: "Pl. 06", title: "Walnut Guest Bath", city: "Encinitas",
+      src: img("walnut-guest-bath"), ratio: "3/4", x: "86%", y: "77%", w: "11%", speed: 1.65, right: true,
       dim: { dir: "v", side: "l", label: "3 : 4" },
     },
     {
-      kind: "plate", no: "Pl. 07", title: "Bay Window Dining", city: "Rancho Bernardo", coord: "C02·R17",
-      src: img("bay-window-dining"), ratio: "1/1", x: "8.333%", y: "83%", w: "16.667%", speed: 1.2,
+      kind: "plate", no: "Pl. 07", title: "Bay Window Dining", city: "Rancho Bernardo",
+      src: img("bay-window-dining"), ratio: "1/1", x: "12%", y: "83%", w: "17%", speed: 1.3,
       dim: { dir: "h", label: "2 COL · 1 : 1" },
     },
     {
       kind: "text",
       text: "One designer carries every project from the first walkthrough to installation day, so the finished room looks the way it did on paper.",
       link: { href: "#work", label: "View selected work →" },
-      x: "25.000%",
-      y: "90%",
-      speed: 1.05,
+      x: "55%",
+      y: "88%",
+      speed: 1.15,
+      maxWidth: "min(330px, calc(31% - 20px))", // plate 6 starts at 86%
     },
   ] satisfies WallItem[] as WallItem[],
 };

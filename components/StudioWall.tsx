@@ -13,6 +13,10 @@ const at = (x: string, y: string, w?: string) => ({ "--x": x, "--y": y, "--w": w
 // staggered single column in source order.
 const placed = "absolute left-[var(--x)] top-[var(--y)]";
 
+/** Grid coordinate of a plate's top-left corner, e.g. C06·R01 (12 columns, rows every 5%). */
+const coord = (x: string, y: string) =>
+  `C${String(Math.round(parseFloat(x) / (100 / 12)) + 1).padStart(2, "0")}·R${String(Math.round(parseFloat(y) / 5)).padStart(2, "0")}`;
+
 function WallPiece({ item }: { item: WallItem }) {
   if (item.kind === "word") {
     return (
@@ -31,8 +35,8 @@ function WallPiece({ item }: { item: WallItem }) {
     return (
       <p
         data-speed={item.speed}
-        style={at(item.x, item.y)}
-        className={`art-p ${placed} z-[2] m-0 max-w-[min(350px,calc(33.333%-20px))] text-[15px] text-body md:pl-5 max-md:max-w-[350px]`}
+        style={{ ...at(item.x, item.y), "--mw": item.maxWidth } as CSSProperties}
+        className={`art-p ${placed} z-[2] m-0 max-w-[330px] text-[15px] text-body md:max-w-[var(--mw)]`}
       >
         {item.text}
         {item.link && (
@@ -83,7 +87,16 @@ function WallPiece({ item }: { item: WallItem }) {
         {item.callout && (
           <span
             className={`co ${item.callout.side}`}
-            style={{ "--px": item.callout.px, "--py": item.callout.py, "--len": item.callout.len } as CSSProperties}
+            style={
+              {
+                "--px": item.callout.px,
+                "--py": item.callout.py,
+                "--len": item.callout.len,
+                "--len-max": item.callout.maxLen,
+                // Share of the wall to the right of the dot, so a right-hand label can stay on screen.
+                "--room": 1 - (parseFloat(item.x) + (parseFloat(item.callout.px) / 100) * parseFloat(item.w)) / 100,
+              } as CSSProperties
+            }
             aria-hidden="true"
           >
             <span className="ll" />
@@ -95,7 +108,7 @@ function WallPiece({ item }: { item: WallItem }) {
       <span className="pl-label mt-2.5 grid grid-cols-[auto_1fr_auto] gap-x-3 gap-y-[3px] text-[10px] uppercase tracking-[.18em] text-muted">
         <span>{item.no}</span>
         <b className="font-medium text-ink">{item.title}</b>
-        <span className="xy col-start-3 row-start-1 font-mono text-[9px] tracking-[.04em] text-ink/45">{item.coord}</span>
+        <span className="xy col-start-3 row-start-1 font-mono text-[9px] tracking-[.04em] text-ink/45">{coord(item.x, item.y)}</span>
         <span className="col-start-2">{item.city}</span>
       </span>
     </a>
@@ -163,7 +176,7 @@ export default function StudioWall() {
         gsap.utils.toArray<HTMLElement>("[data-speed]").forEach((el) => {
           const speed = parseFloat(el.dataset.speed ?? "1");
           gsap.to(el, {
-            y: () => -window.innerHeight * 0.18 * speed,
+            y: () => -window.innerHeight * studio.drift * speed,
             ease: "none",
             scrollTrigger: { trigger: root.current, start: "top bottom", end: "bottom top", scrub: 0.8, invalidateOnRefresh: true },
           });
@@ -179,7 +192,8 @@ export default function StudioWall() {
       ref={root}
       id="about"
       aria-label="The studio"
-      className="relative mx-pad h-[240vh] max-md:flex max-md:h-auto max-md:flex-col max-md:gap-7 max-md:pb-[72px] max-md:pt-24 max-md:[&>*]:!relative max-md:[&>*]:!left-auto max-md:[&>*]:!top-auto"
+      style={{ "--wall-h": studio.height } as CSSProperties}
+      className="relative mx-pad h-[var(--wall-h)] max-md:flex max-md:h-auto max-md:flex-col max-md:gap-7 max-md:pb-[72px] max-md:pt-24 max-md:[&>*]:!relative max-md:[&>*]:!left-auto max-md:[&>*]:!top-auto"
     >
       {/* Drafting layer: 12 column lines, column numbers, and a ruler in the left margin. */}
       <div className="art-grid" aria-hidden="true" />
