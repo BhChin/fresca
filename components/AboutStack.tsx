@@ -15,15 +15,14 @@ export default function AboutStack() {
       const mm = gsap.matchMedia();
       mm.add(MOTION, () => {
         revealLines(root.current!);
-        // Each card shrinks and darkens as the next one stacks over it.
+        // Each card shrinks and darkens as the next one stacks over it. The darkening
+        // is a black layer fading to .45 (the same result as filter: brightness(.55))
+        // because animating a filter on a large photo repaints every frame.
         const cards = gsap.utils.toArray<HTMLElement>(".scard");
         cards.slice(0, -1).forEach((card, i) => {
-          gsap.to(card, {
-            scale: 0.9,
-            filter: "brightness(.55)",
-            ease: "none",
-            scrollTrigger: { trigger: cards[i + 1], start: "top bottom", end: "top 20%", scrub: true },
-          });
+          const st = { trigger: cards[i + 1], start: "top bottom", end: "top 20%", scrub: true };
+          gsap.to(card, { scale: 0.9, ease: "none", scrollTrigger: st });
+          gsap.fromTo(card.querySelector(".scard-dim"), { opacity: 0 }, { opacity: 0.45, ease: "none", scrollTrigger: st });
         });
       });
       return () => mm.revert();
@@ -54,7 +53,7 @@ export default function AboutStack() {
           <div
             key={stat.label}
             style={{ top: `calc(14vh + ${i * 22}px)` }}
-            className="scard sticky mb-[6vh] h-[68vh] min-h-[420px] origin-top overflow-hidden rounded-lg text-white"
+            className="scard sticky isolate mb-[6vh] h-[68vh] min-h-[420px] origin-top overflow-hidden rounded-lg text-white will-change-transform"
           >
             <Image src={stat.image.src} alt={stat.image.alt} fill quality={85} sizes="(min-width: 861px) 55vw, 100vw" className="object-cover" />
             <div className="absolute inset-0 bg-[rgba(16,15,13,.36)]" />
@@ -63,6 +62,7 @@ export default function AboutStack() {
               <span>{String(i + 1).padStart(2, "0")}</span>
             </div>
             <span className="absolute bottom-3 left-6 z-[2] font-serif text-[clamp(110px,14vw,220px)] leading-[.9]">{stat.value}</span>
+            <div aria-hidden="true" className="scard-dim pointer-events-none absolute inset-0 z-[3] bg-black opacity-0" />
           </div>
         ))}
       </div>

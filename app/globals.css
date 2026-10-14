@@ -263,8 +263,14 @@ html:not(.intro) .hero-cycle {
   right: 0;
   transform-origin: 100% 50%;
 }
+.co.r {
+  /* Keep the label on screen at narrow desktop widths: the dot sits at ~78% of
+     the wall, so the line plus a ~100px label must fit in the last ~22%. */
+  --len-fit: min(var(--len), calc((100vw - 2 * var(--pad)) * 0.21667 - 116px));
+}
 .co.r .ll {
   left: 0;
+  width: var(--len-fit);
   transform-origin: 0 50%;
 }
 .co .t {
@@ -281,7 +287,7 @@ html:not(.intro) .hero-cycle {
   right: calc(var(--len) + 8px);
 }
 .co.r .t {
-  left: calc(var(--len) + 8px);
+  left: calc(var(--len-fit) + 8px);
 }
 
 /* ───────── approach blueprint (v6) */

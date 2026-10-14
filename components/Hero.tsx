@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { hero } from "@/content/site";
 import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { INTRO_KEY, introIsPlaying } from "@/lib/intro";
@@ -13,9 +13,17 @@ export default function Hero() {
   const root = useRef<HTMLElement>(null);
   const countRef = useRef<HTMLSpanElement>(null);
   const { start } = useSmoothScroll();
+  // Intro frames 2-5 are added after hydration (only when the intro plays), so
+  // they download after first paint instead of competing with it. They're not
+  // shown until 0.33s into the intro; if one is late, the previous frame stays.
+  const [laterFrames, setLaterFrames] = useState(false);
+  useEffect(() => {
+    if (introIsPlaying()) setLaterFrames(true);
+  }, []);
 
   useGSAP(
     () => {
+      if (introIsPlaying() && !laterFrames) return; // build the intro once every frame is in the DOM
       const mm = gsap.matchMedia();
       mm.add(MOTION, () => {
         // Intro: photos cycle in a small frame while the counter runs, then it opens to full screen.
@@ -53,7 +61,14 @@ export default function Hero() {
           });
           intro
             .to(".intro-ui", { autoAlpha: 0, duration: 0.4, ease: "power1.out" }, 2.05)
-            .to(".hero-media", { clipPath: "inset(0% 0% 0% 0% round 0px)", duration: 1.5 }, 2.1)
+            // Explicit start shape: the browser shortens the computed inset() to two
+            // values, which would make the frame open from the bottom-left corner.
+            .fromTo(
+              ".hero-media",
+              { clipPath: "inset(37% 41.5% 37% 41.5% round 3px)" },
+              { clipPath: "inset(0% 0% 0% 0% round 0px)", duration: 1.5 },
+              2.1,
+            )
             .fromTo(".hero-final", { scale: 1.35 }, { scale: 1.06, duration: 1.9, ease: "power3.out" }, 2.1)
             .to(".hero-shade", { opacity: 1, duration: 1, ease: "power1.out" }, 2.6)
             .to(".hero-ln > span", { yPercent: 0, duration: 1.2, stagger: 0.1, ease: "power4.out" }, 2.95)
@@ -65,8 +80,9 @@ export default function Hero() {
               } catch {}
               html.classList.remove("intro");
               start();
-              ScrollTrigger.refresh();
-            }, 3.4);
+            }, 3.4)
+            // Recalculate triggers once everything has settled, not mid-animation.
+            .eventCallback("onComplete", () => ScrollTrigger.refresh());
         }
 
         // Hero parallax: the photo sinks while the text rises and fades.
@@ -84,7 +100,7 @@ export default function Hero() {
       });
       return () => mm.revert();
     },
-    { scope: root },
+    { scope: root, dependencies: [laterFrames] },
   );
 
   return (
@@ -93,10 +109,13 @@ export default function Hero() {
         {/* Intro-only photos: display:none (and so never loaded) once the intro has played. */}
         {hero.cycle.map((src, i) => (
           <div key={src} className="hero-cycle absolute inset-0">
-            {/* Seen only inside the small intro frame (~17vw wide). The first one paints
-                before hydration and is the page's LCP, so it is preloaded at full width
-                (repeat visits skip the intro but are in the same session, so it's cached). */}
-            <Image src={src} alt="" fill priority={i === 0} sizes={i === 0 ? "100vw" : "20vw"} quality={85} className="object-cover" />
+            {/* Each frame is a full-size photo clipped to the small intro window, so it
+                needs full-width resolution. The first one paints before hydration and is
+                the page's LCP, so it is preloaded (repeat visits skip the intro but are
+                in the same session, so it's cached). */}
+            {(i === 0 || laterFrames) && (
+              <Image src={src} alt="" fill priority={i === 0} sizes="100vw" quality={85} className="object-cover" />
+            )}
           </div>
         ))}
         <Image

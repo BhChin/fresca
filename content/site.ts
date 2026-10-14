@@ -125,7 +125,7 @@ export type WallItem = WallWord | WallPlate | WallText;
 
 export const studio = {
   srHeading: "A fresh home, considered.",
-  caption: ["(01) The studio", "Index of rooms · 01–07 · 12-col grid"],
+  caption: ["(01) The studio", "Index of rooms · 01–07", "12-col grid"], // last part is desktop only (the grid is hidden on mobile)
   columns: 12,
   /** Ruler labels down the left margin: 00–19, one every 5% of the wall. */
   rulerMarks: 20,
@@ -200,6 +200,13 @@ export const showcase = {
   eyebrow: "(02) Selected work",
   projects: [
     {
+      title: "Coastal Blue Family Room",
+      weeks: "8", // DEMO: timeline placeholder
+      area: "510", // DEMO: square footage placeholder
+      city: "Carmel Valley", // DEMO: city placeholder
+      image: { src: img("mosaic-fireplace-family-room"), alt: "Family room with mosaic fireplace and blue art" },
+    },
+    {
       title: "Cognac & Linen Living Room",
       weeks: "10", // DEMO: timeline placeholder
       area: "640", // DEMO: square footage placeholder
@@ -212,13 +219,6 @@ export const showcase = {
       area: "420", // DEMO: square footage placeholder
       city: "Poway", // DEMO: city placeholder
       image: { src: img("gloss-kitchen"), alt: "Modern kitchen with white gloss cabinets and charcoal counters" },
-    },
-    {
-      title: "Coastal Blue Family Room",
-      weeks: "8", // DEMO: timeline placeholder
-      area: "510", // DEMO: square footage placeholder
-      city: "Carmel Valley", // DEMO: city placeholder
-      image: { src: img("mosaic-fireplace-family-room"), alt: "Family room with mosaic fireplace and blue art" },
     },
     {
       title: "Reclaimed Wood Primary Suite",

@@ -32,7 +32,7 @@ function WallPiece({ item }: { item: WallItem }) {
       <p
         data-speed={item.speed}
         style={at(item.x, item.y)}
-        className={`art-p ${placed} z-[2] m-0 max-w-[350px] text-[15px] text-body md:pl-5`}
+        className={`art-p ${placed} z-[2] m-0 max-w-[min(350px,calc(33.333%-20px))] text-[15px] text-body md:pl-5 max-md:max-w-[350px]`}
       >
         {item.text}
         {item.link && (
@@ -58,7 +58,7 @@ function WallPiece({ item }: { item: WallItem }) {
       style={at(item.x, item.y, item.w)}
       className={`pl group ${placed} z-[2] w-[var(--w)] text-ink no-underline ${
         item.right ? "max-md:!w-1/2 max-md:self-end" : "max-md:!w-[64%]"
-      }`}
+      } ${item.dim?.dir === "h" ? "max-md:mt-4" : ""} ${item.dim?.dir === "v" && item.dim.side === "l" && !item.right ? "max-md:ml-4" : ""}`}
     >
       {/* .fr has no overflow clip, so dimension lines and callouts can sit outside the photo. */}
       <div className="fr">
@@ -198,8 +198,11 @@ export default function StudioWall() {
       {/* The spec's hidden h2 keeps its default margins (they space the mobile column). */}
       <h2 className="sr-only mx-0 my-5">{studio.srHeading}</h2>
       <div className="cap absolute inset-x-0 top-[3%] flex justify-between text-muted max-md:-order-1">
-        <span>{studio.caption[0]}</span>
-        <span>{studio.caption[1]}</span>
+        <span className="whitespace-nowrap">{studio.caption[0]}</span>
+        <span className="text-right">
+          {studio.caption[1]}
+          <span className="max-md:hidden"> · {studio.caption[2]}</span>
+        </span>
       </div>
       {studio.marks.map((m) => (
         <span
