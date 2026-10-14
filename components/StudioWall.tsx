@@ -32,7 +32,7 @@ function WallPiece({ item }: { item: WallItem }) {
       <p
         data-speed={item.speed}
         style={at(item.x, item.y)}
-        className={`art-p ${placed} z-[2] m-0 max-w-[330px] text-[15px] text-body`}
+        className={`art-p ${placed} z-[2] m-0 max-w-[350px] text-[15px] text-body md:pl-5`}
       >
         {item.text}
         {item.link && (
@@ -60,21 +60,42 @@ function WallPiece({ item }: { item: WallItem }) {
         item.right ? "max-md:!w-1/2 max-md:self-end" : "max-md:!w-[64%]"
       }`}
     >
-      <div className="pl-frame relative overflow-hidden bg-ground-2" style={{ aspectRatio: item.ratio }}>
-        <div className="pl-img absolute left-0 top-[-10%] h-[120%] w-full">
-          <Image
-            src={item.src}
-            alt={item.title}
-            fill
-            quality={85}
-            sizes={`(min-width: 861px) ${parseFloat(item.w)}vw, ${mobileWidth}vw`}
-            className="object-cover transition-[filter] duration-500 group-hover:brightness-[.85]"
-          />
+      {/* .fr has no overflow clip, so dimension lines and callouts can sit outside the photo. */}
+      <div className="fr">
+        <div className="pl-frame relative overflow-hidden bg-ground-2" style={{ aspectRatio: item.ratio }}>
+          <div className="pl-img absolute left-0 top-[-10%] h-[120%] w-full">
+            <Image
+              src={item.src}
+              alt={item.title}
+              fill
+              quality={85}
+              sizes={`(min-width: 861px) ${parseFloat(item.w)}vw, ${mobileWidth}vw`}
+              className="object-cover transition-[filter] duration-500 group-hover:brightness-[.85]"
+            />
+          </div>
         </div>
+        {item.dim && (
+          <span className={`dim ${item.dim.dir} ${item.dim.side ?? ""}`} aria-hidden="true">
+            <i className="dl" />
+            <em>{item.dim.label}</em>
+          </span>
+        )}
+        {item.callout && (
+          <span
+            className={`co ${item.callout.side}`}
+            style={{ "--px": item.callout.px, "--py": item.callout.py, "--len": item.callout.len } as CSSProperties}
+            aria-hidden="true"
+          >
+            <span className="ll" />
+            <i />
+            <span className="t">{item.callout.text}</span>
+          </span>
+        )}
       </div>
-      <span className="pl-label mt-2.5 grid grid-cols-[auto_1fr] gap-x-3 gap-y-[3px] text-[10px] uppercase tracking-[.18em] text-muted">
+      <span className="pl-label mt-2.5 grid grid-cols-[auto_1fr_auto] gap-x-3 gap-y-[3px] text-[10px] uppercase tracking-[.18em] text-muted">
         <span>{item.no}</span>
         <b className="font-medium text-ink">{item.title}</b>
+        <span className="xy col-start-3 row-start-1 font-mono text-[9px] tracking-[.04em] text-ink/45">{item.coord}</span>
         <span className="col-start-2">{item.city}</span>
       </span>
     </a>
@@ -90,6 +111,15 @@ export default function StudioWall() {
       mm.add(MOTION, () => {
         revealLines(root.current!);
 
+        // Grid lines reveal top to bottom; column numbers and ruler labels fade in.
+        gsap.fromTo(
+          ".art-grid",
+          { clipPath: "inset(0 0 100% 0)" },
+          { clipPath: "inset(0 0 0% 0)", ease: "none", scrollTrigger: { trigger: root.current, start: "top 85%", end: "45% center", scrub: true } },
+        );
+        gsap.from(".art-cols span", { opacity: 0, y: -6, duration: 0.6, stagger: 0.04, ease: "power2.out", scrollTrigger: { trigger: root.current, start: "top 80%" } });
+        gsap.from(".art-ruler span", { opacity: 0, duration: 0.5, stagger: 0.03, scrollTrigger: { trigger: root.current, start: "top 80%" } });
+
         // Plates unmask from the bottom, then their label arrives; the photo drifts inside its frame.
         gsap.utils.toArray<HTMLElement>(".pl").forEach((pl) => {
           const enter = { trigger: pl, start: "top 92%" };
@@ -104,6 +134,23 @@ export default function StudioWall() {
             { yPercent: -8 },
             { yPercent: 8, ease: "none", scrollTrigger: { trigger: pl, start: "top bottom", end: "bottom top", scrub: 0.8 } },
           );
+
+          // Dimension line draws in after the photo unmasks, then its label appears.
+          const annotate = { trigger: pl, start: "top 88%" };
+          const dim = pl.querySelector<HTMLElement>(".dim");
+          if (dim) {
+            const vertical = dim.classList.contains("v");
+            gsap.from(dim.querySelector(".dl"), { ...(vertical ? { scaleY: 0 } : { scaleX: 0 }), duration: 1.1, delay: 0.5, ease: "power3.inOut", scrollTrigger: annotate });
+            gsap.from(dim, { opacity: 0, duration: 0.4, delay: 0.45, scrollTrigger: annotate });
+            gsap.from(dim.querySelector("em"), { opacity: 0, duration: 0.5, delay: 1.1, scrollTrigger: annotate });
+          }
+          // Callout: the dot pops in, the leader line draws, then the label slides in.
+          const co = pl.querySelector<HTMLElement>(".co");
+          if (co) {
+            gsap.from(co.querySelector("i"), { scale: 0, duration: 0.5, delay: 0.8, ease: "back.out(2)", scrollTrigger: annotate });
+            gsap.from(co.querySelector(".ll"), { scaleX: 0, duration: 0.9, delay: 1, ease: "power3.inOut", scrollTrigger: annotate });
+            gsap.from(co.querySelector(".t"), { opacity: 0, x: co.classList.contains("l") ? 8 : -8, duration: 0.6, delay: 1.6, ease: "power2.out", scrollTrigger: annotate });
+          }
         });
 
         gsap.utils.toArray<HTMLElement>(".art-p").forEach((el) => {
@@ -116,7 +163,7 @@ export default function StudioWall() {
         gsap.utils.toArray<HTMLElement>("[data-speed]").forEach((el) => {
           const speed = parseFloat(el.dataset.speed ?? "1");
           gsap.to(el, {
-            y: () => -window.innerHeight * 0.24 * speed,
+            y: () => -window.innerHeight * 0.18 * speed,
             ease: "none",
             scrollTrigger: { trigger: root.current, start: "top bottom", end: "bottom top", scrub: 0.8, invalidateOnRefresh: true },
           });
@@ -132,10 +179,24 @@ export default function StudioWall() {
       ref={root}
       id="about"
       aria-label="The studio"
-      className="relative mx-pad h-[225vh] max-md:flex max-md:h-auto max-md:flex-col max-md:gap-7 max-md:pb-[72px] max-md:pt-24 max-md:[&>*]:!relative max-md:[&>*]:!left-auto max-md:[&>*]:!top-auto"
+      className="relative mx-pad h-[240vh] max-md:flex max-md:h-auto max-md:flex-col max-md:gap-7 max-md:pb-[72px] max-md:pt-24 max-md:[&>*]:!relative max-md:[&>*]:!left-auto max-md:[&>*]:!top-auto"
     >
-      {/* On mobile the spec's hidden h2 keeps its default margins, which space the column. */}
-      <h2 className="sr-only max-md:my-5">{studio.srHeading}</h2>
+      {/* Drafting layer: 12 column lines, column numbers, and a ruler in the left margin. */}
+      <div className="art-grid" aria-hidden="true" />
+      <div className="art-cols" aria-hidden="true">
+        {Array.from({ length: studio.columns }, (_, i) => (
+          <span key={i}>{String(i + 1).padStart(2, "0")}</span>
+        ))}
+      </div>
+      <div className="art-ruler" aria-hidden="true">
+        {Array.from({ length: studio.rulerMarks }, (_, i) => (
+          <span key={i} style={{ top: `${i * 5}%` }}>
+            {String(i).padStart(2, "0")}
+          </span>
+        ))}
+      </div>
+      {/* The spec's hidden h2 keeps its default margins (they space the mobile column). */}
+      <h2 className="sr-only mx-0 my-5">{studio.srHeading}</h2>
       <div className="cap absolute inset-x-0 top-[3%] flex justify-between text-muted max-md:-order-1">
         <span>{studio.caption[0]}</span>
         <span>{studio.caption[1]}</span>

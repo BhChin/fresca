@@ -23,6 +23,7 @@ const config: Config = {
       fontFamily: {
         serif: ["var(--serif)"],
         sans: ["var(--sans)"],
+        mono: ["var(--mono)"],
       },
       spacing: {
         pad: "var(--pad)",

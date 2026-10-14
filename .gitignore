@@ -39,3 +39,6 @@ next-env.d.ts
 /.claude/
 .env*
 !.env.example
+
+# rendered reference pages (large, images inlined)
+/reference/fresca-homepage-*.html

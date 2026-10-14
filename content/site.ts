@@ -91,16 +91,22 @@ export const hero = {
   },
 };
 
-// ───────── studio wall (exhibition layout)
-// x/y/w are percentages of the wall on desktop; speed is the drift multiplier.
-// `right` items align right in the mobile single column. Order = mobile order.
+// ───────── studio wall (exhibition layout, v6 12-column grid)
+// x/y/w are percentages of the wall on desktop (one column = 8.333%); speed is
+// the drift multiplier. `right` items align right in the mobile single column.
+// Order = mobile order. Values are copied exactly from the v6 design source.
 
 type WallWord = { kind: "word"; text: string; italic?: boolean; x: string; y: string; speed: number; right?: boolean };
+/** Dimension line: horizontal above the frame, or vertical on its left/right. */
+type WallDim = { dir: "h" | "v"; side?: "l" | "r"; label: string };
+/** Callout: a dot at px/py on the photo with a leader line of `len` to a label. */
+type WallCallout = { side: "l" | "r"; px: string; py: string; len: string; text: string };
 type WallPlate = {
   kind: "plate";
   no: string;
   title: string;
   city: string; // DEMO: project cities are placeholders
+  coord: string; // grid column/row of the plate, e.g. C06·R01
   src: string;
   ratio: string;
   x: string;
@@ -108,44 +114,79 @@ type WallPlate = {
   w: string;
   speed: number;
   right?: boolean;
+  dim?: WallDim;
+  callout?: WallCallout;
 };
 type WallText = { kind: "text"; text: string; link?: { href: string; label: string }; x: string; y: string; speed: number };
 export type WallItem = WallWord | WallPlate | WallText;
 
 export const studio = {
   srHeading: "A fresh home, considered.",
-  caption: ["(01) The studio", "Index of rooms · 01–07"],
+  caption: ["(01) The studio", "Index of rooms · 01–07 · 12-col grid"],
+  columns: 12,
+  /** Ruler labels down the left margin: 00–19, one every 5% of the wall. */
+  rulerMarks: 20,
+  /** Registration marks on grid intersections, centered on the point. */
   marks: [
-    { x: "30%", y: "12%" },
-    { x: "96%", y: "44%" },
-    { x: "52%", y: "66%" },
-    { x: "2%", y: "96%" },
+    { x: "calc(25% - 7px)", y: "calc(10% - 7px)" },
+    { x: "calc(91.667% - 7px)", y: "calc(45% - 7px)" },
+    { x: "calc(50% - 7px)", y: "calc(65% - 7px)" },
+    { x: "calc(8.333% - 7px)", y: "calc(95% - 7px)" },
   ],
   items: [
-    { kind: "word", text: "A fresh", x: "3%", y: "11%", speed: 0.55 },
-    { kind: "plate", no: "Pl. 01", title: "Black-Hood Kitchen", city: "Rancho Bernardo", src: img("black-hood-kitchen-island"), ratio: "4/5", x: "42%", y: "7%", w: "21%", speed: 1.25 },
-    { kind: "plate", no: "Pl. 02", title: "Blush Guest Bedroom", city: "Poway", src: img("blush-guest-bedroom"), ratio: "3/4", x: "79%", y: "17%", w: "13%", speed: 1.9, right: true },
-    { kind: "word", text: "home,", x: "62%", y: "35%", speed: 0.85, right: true },
-    { kind: "plate", no: "Pl. 03", title: "Navy Double Vanity", city: "Carmel Valley", src: img("navy-double-vanity"), ratio: "3/4", x: "7%", y: "35%", w: "15%", speed: 1.45 },
+    { kind: "word", text: "A fresh", x: "0%", y: "14%", speed: 0.5 },
+    {
+      kind: "plate", no: "Pl. 01", title: "Black-Hood Kitchen", city: "Rancho Bernardo", coord: "C06·R01",
+      src: img("black-hood-kitchen-island"), ratio: "4/5", x: "41.667%", y: "7%", w: "25.000%", speed: 1.1,
+      dim: { dir: "h", label: "3 COL · 4 : 5" },
+      callout: { side: "l", px: "50%", py: "26%", len: "260px", text: "Glass pendants ×3" },
+    },
+    {
+      kind: "plate", no: "Pl. 02", title: "Blush Guest Bedroom", city: "Poway", coord: "C10·R03",
+      src: img("blush-guest-bedroom"), ratio: "3/4", x: "75.000%", y: "16%", w: "16.667%", speed: 1.5, right: true,
+    },
+    { kind: "word", text: "home,", x: "58.333%", y: "35%", speed: 0.7, right: true },
+    {
+      kind: "plate", no: "Pl. 03", title: "Navy Double Vanity", city: "Carmel Valley", coord: "C02·R07",
+      src: img("navy-double-vanity"), ratio: "3/4", x: "8.333%", y: "35%", w: "16.667%", speed: 1.3,
+      dim: { dir: "v", side: "l", label: "3 : 4" },
+    },
     {
       kind: "text",
       text: "Fresca is a residential design studio in San Diego. We design kitchens, baths and whole homes around how you actually live in them.",
-      x: "30%",
-      y: "45%",
-      speed: 1,
+      x: "25.000%",
+      y: "46%",
+      speed: 0.9,
     },
-    { kind: "plate", no: "Pl. 04", title: "Two-Story Living Room", city: "Carmel Valley", src: img("two-story-living-room"), ratio: "4/5", x: "61%", y: "50%", w: "25%", speed: 1.05, right: true },
-    { kind: "word", text: "considered.", italic: true, x: "2%", y: "61%", speed: 0.7 },
-    { kind: "plate", no: "Pl. 05", title: "Orb Pendant Kitchen", city: "Poway", src: img("blue-gray-island-kitchen"), ratio: "1/1", x: "47%", y: "74%", w: "13%", speed: 1.8 },
-    { kind: "plate", no: "Pl. 06", title: "Walnut Guest Bath", city: "Encinitas", src: img("walnut-guest-bath"), ratio: "3/4", x: "86%", y: "77%", w: "11%", speed: 1.65, right: true },
-    { kind: "plate", no: "Pl. 07", title: "Bay Window Dining", city: "Rancho Bernardo", src: img("bay-window-dining"), ratio: "1/1", x: "12%", y: "83%", w: "17%", speed: 1.3 },
+    {
+      kind: "plate", no: "Pl. 04", title: "Two-Story Living Room", city: "Carmel Valley", coord: "C08·R10",
+      src: img("two-story-living-room"), ratio: "4/5", x: "58.333%", y: "50%", w: "25.000%", speed: 1.0, right: true,
+      dim: { dir: "h", label: "3 COL · 4 : 5" },
+      callout: { side: "r", px: "80%", py: "84%", len: "110px", text: "Linen sectional" },
+    },
+    { kind: "word", text: "considered.", italic: true, x: "0%", y: "61%", speed: 0.6 },
+    {
+      kind: "plate", no: "Pl. 05", title: "Orb Pendant Kitchen", city: "Poway", coord: "C06·R15",
+      src: img("blue-gray-island-kitchen"), ratio: "1/1", x: "41.667%", y: "74%", w: "16.667%", speed: 1.5,
+      callout: { side: "l", px: "45%", py: "70%", len: "165px", text: "Blue-gray island" },
+    },
+    {
+      kind: "plate", no: "Pl. 06", title: "Walnut Guest Bath", city: "Encinitas", coord: "C11·R15",
+      src: img("walnut-guest-bath"), ratio: "3/4", x: "83.333%", y: "76%", w: "16.667%", speed: 1.35, right: true,
+      dim: { dir: "v", side: "l", label: "3 : 4" },
+    },
+    {
+      kind: "plate", no: "Pl. 07", title: "Bay Window Dining", city: "Rancho Bernardo", coord: "C02·R17",
+      src: img("bay-window-dining"), ratio: "1/1", x: "8.333%", y: "83%", w: "16.667%", speed: 1.2,
+      dim: { dir: "h", label: "2 COL · 1 : 1" },
+    },
     {
       kind: "text",
       text: "One designer carries every project from the first walkthrough to installation day, so the finished room looks the way it did on paper.",
       link: { href: "#work", label: "View selected work →" },
-      x: "55%",
-      y: "88%",
-      speed: 1.15,
+      x: "25.000%",
+      y: "90%",
+      speed: 1.05,
     },
   ] satisfies WallItem[] as WallItem[],
 };
@@ -222,6 +263,9 @@ export const promises = {
 
 // ───────── approach (pinned horizontal)
 
+/** Line drawing shown above each approach panel (see components/ApproachDrawing.tsx). */
+export type ApproachDrawingKind = "plan" | "elevation" | "ceiling";
+
 export const approach = {
   eyebrow: "(04) Approach",
   heading: ["Plan the space,", "then make it beautiful."],
@@ -231,18 +275,33 @@ export const approach = {
       text: "We start with how you move through the house: where you cook, gather and put things down. The floor plan comes before any finish.",
       photo: { src: img("navy-chair-great-room"), alt: "Great room with navy swivel chairs and linear fireplace" },
       board: { src: img("color-floor-plan"), alt: "Color floor plan of a two-story home" },
+      drawing: "plan" as ApproachDrawingKind,
+      spec: [
+        ["Work aisle", "42 in"],
+        ["Walkway, min.", "36 in"],
+      ],
     },
     {
       title: "Design",
       text: "Cabinetry, stone, tile and paint are chosen together on one board, so every surface agrees with the one beside it.",
       photo: { src: img("blue-gray-island-kitchen"), alt: "Kitchen with blue-gray island and patterned tile backsplash" },
       board: { src: img("kitchen-material-board"), alt: "Kitchen material and elevation board" },
+      drawing: "elevation" as ApproachDrawingKind,
+      spec: [
+        ["Counter height", "36 in"],
+        ["Counter to uppers", "18 in"],
+      ],
     },
     {
       title: "Light",
       text: "Each fixture is placed on a ceiling plan with the room’s daylight in mind, so the space works at noon and at night.",
       photo: { src: img("orb-chandelier-dining"), alt: "Dining room under an iron orb chandelier" },
       board: { src: img("lighting-ceiling-plan"), alt: "Reflected ceiling and lighting plan" },
+      drawing: "ceiling" as ApproachDrawingKind,
+      spec: [
+        ["Pendant above counter", "30–36 in"],
+        ["Color temperature", "2700 K"],
+      ],
     },
   ],
 };

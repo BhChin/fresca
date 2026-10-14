@@ -1,0 +1,616 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fresca Interior Design</title>
+<meta name="description" content="Fresca designs kitchens, bathrooms and whole homes across San Diego County.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ground:#F4F2EB; --ground-2:#E7E4DB; --ink:#1D1C1A; --body:#4A4740; --muted:#6B665C; --line:rgba(29,28,26,.14);
+  --accent:#2B3A55; --on-dark:#CFC9BC;
+  --serif:'Instrument Serif', Georgia, serif; --sans:'Hanken Grotesk', system-ui, sans-serif;
+  --pad:clamp(16px,2.2vw,32px);
+}
+*{box-sizing:border-box}
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto!important}
+.lenis.lenis-stopped{overflow:hidden}
+html.is-loading{overflow:hidden}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{display:block;max-width:100%}
+a{color:inherit}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid currentColor;outline-offset:4px}
+.cap{font-size:11px;letter-spacing:.24em;text-transform:uppercase}
+.serif{font-family:var(--serif);font-weight:400}
+.ln{display:block;overflow:hidden;padding-bottom:.06em;margin-bottom:-.06em}
+.ln>span{display:block}
+
+/* ───────── header (difference blend keeps it legible on any background) */
+.site-header{position:fixed;inset:0 0 auto 0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px var(--pad);color:#fff;mix-blend-mode:difference;pointer-events:none}
+.site-header>*{pointer-events:auto}
+.logo{display:flex;flex-direction:column;text-decoration:none;line-height:1}
+.logo b{font-family:var(--serif);font-style:italic;font-weight:400;font-size:32px}
+.logo span{font-size:9px;letter-spacing:.36em;text-transform:uppercase;margin-top:3px}
+.header-right{display:flex;align-items:center;gap:10px}
+.hbtn{display:inline-flex;align-items:center;gap:10px;min-height:44px;padding:0 20px;border:1px solid currentColor;border-radius:999px;background:none;cursor:pointer;text-decoration:none;font-size:12px;letter-spacing:.18em;text-transform:uppercase}
+.hbtn i{display:block;width:16px;height:1px;background:currentColor;box-shadow:0 5px 0 currentColor;transform:translateY(-2px)}
+
+/* ───────── menu overlay */
+.menu{position:fixed;inset:0;z-index:60;background:var(--ink);color:var(--ground);clip-path:inset(0 0 100% 0);transition:clip-path .9s cubic-bezier(.76,0,.24,1);display:flex;flex-direction:column;padding:20px var(--pad) 32px}
+.menu.open{clip-path:inset(0 0 0 0)}
+.menu-top{display:flex;justify-content:space-between;align-items:center}
+.menu-links{flex:1;display:flex;flex-direction:column;justify-content:center;gap:4px;padding:40px 0}
+.menu-links a{text-decoration:none;font-family:var(--serif);font-size:clamp(48px,8vw,112px);line-height:1;display:flex;align-items:baseline;gap:24px;width:max-content}
+.menu-links a small{font-family:var(--sans);font-size:12px;letter-spacing:.2em;color:var(--on-dark)}
+.menu-links a:hover{font-style:italic}
+.menu-foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px;font-size:14px;color:var(--on-dark)}
+.menu-foot a{text-decoration:none}
+
+/* ───────── hero */
+.hero{position:relative;height:100vh;height:100svh;min-height:560px;overflow:hidden;background:var(--ground)}
+.hero-media{position:absolute;inset:0;overflow:hidden;will-change:clip-path}
+.hero-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hero-shade{position:absolute;inset:0;background:rgba(18,17,15,.38);opacity:0}
+.intro-ui{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:24vh 0 18vh;pointer-events:none;color:var(--ink)}
+.intro-ui .count{font-family:var(--serif);font-size:20px;font-variant-numeric:tabular-nums}
+.hero-content{position:absolute;inset:auto 0 0 0;padding:0 var(--pad) 9vh;display:flex;flex-direction:column;align-items:center;text-align:center;color:#fff}
+.hero-content .cap{margin:0 0 20px}
+.hero-content h1{margin:0;font-family:var(--serif);font-weight:400;font-size:clamp(52px,7.4vw,124px);line-height:.95;letter-spacing:-.015em}
+.hero-content p{margin:22px 0 0;max-width:420px;font-size:16px;color:rgba(255,255,255,.86)}
+.scroll-cue{position:absolute;left:var(--pad);bottom:28px;color:#fff;display:flex;align-items:center;gap:12px}
+.scroll-cue i{display:block;width:1px;height:36px;background:rgba(255,255,255,.4);position:relative;overflow:hidden}
+.scroll-cue i::after{content:"";position:absolute;left:0;top:-100%;width:1px;height:100%;background:#fff;animation:cue 2s cubic-bezier(.6,0,.2,1) infinite}
+@keyframes cue{to{top:100%}}
+
+/* ───────── studio as an exhibition wall */
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.art{position:relative;height:225vh;margin:0 var(--pad)}
+.art-cap{position:absolute;left:0;right:0;top:3%;display:flex;justify-content:space-between;color:var(--muted)}
+.art-w{position:absolute;z-index:1;left:var(--x);top:var(--y);font-family:var(--serif);font-weight:400;font-size:clamp(64px,9.2vw,152px);line-height:.9;letter-spacing:-.02em;white-space:nowrap}
+.pl{position:absolute;z-index:2;left:var(--x);top:var(--y);width:var(--w);text-decoration:none;color:var(--ink)}
+.pl .f{position:relative;overflow:hidden;aspect-ratio:var(--ar,4/5);background:var(--ground-2)}
+.pl img{position:absolute;left:0;top:-10%;width:100%;height:120%;object-fit:cover;transition:filter .5s}
+.pl:hover img{filter:brightness(.85)}
+.pl .lab{display:grid;grid-template-columns:auto 1fr;gap:3px 12px;margin-top:10px;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.pl .lab b{font-weight:500;color:var(--ink)}
+.pl .lab span:last-child{grid-column:2}
+.art-p{position:absolute;z-index:2;left:var(--x);top:var(--y);margin:0;max-width:330px;font-size:15px;color:var(--body)}
+.art-p a{display:inline-flex;margin-top:18px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;text-underline-offset:6px;color:var(--ink)}
+.reg{position:absolute;left:var(--x);top:var(--y);width:15px;height:15px}
+.reg::before,.reg::after{content:"";position:absolute;background:rgba(29,28,26,.3)}
+.reg::before{left:7px;top:0;width:1px;height:15px}.reg::after{top:7px;left:0;height:1px;width:15px}
+
+/* ───────── project showcase */
+.showcase{position:relative;height:280vh}
+.sc-sticky{position:sticky;top:0;height:100vh;height:100svh;padding:6px}
+.sc-panel{position:relative;height:100%;border-radius:8px;overflow:hidden;background:#141311;color:var(--ground)}
+.sc-ghost{position:absolute;left:28%;top:24%;width:44%;height:52%;overflow:hidden;border-radius:4px;opacity:.35}
+.sc-ghost img{width:100%;height:100%;object-fit:cover}
+.sc-media{position:absolute;inset:0;overflow:hidden;will-change:clip-path}
+.sc-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0}
+.sc-img.on{opacity:1}
+.sc-shade{position:absolute;inset:0;background:rgba(14,13,12,.42);opacity:0}
+.sc-chess{position:absolute;top:0;z-index:6;height:0;background:var(--ground)}
+.sc-chess.l{left:0;width:50%}.sc-chess.r{right:0;width:50%}
+.sc-top{position:absolute;z-index:5;left:0;right:0;top:0;display:flex;justify-content:space-between;align-items:flex-start;padding:96px clamp(20px,3vw,48px) 0}
+.sc-count{font-family:var(--serif);font-size:22px;font-variant-numeric:tabular-nums}
+.sc-info{position:absolute;z-index:5;left:0;right:0;bottom:0;padding:0 clamp(20px,3vw,48px) clamp(24px,4vh,44px);display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:28px}
+.sc-title-mask{overflow:hidden}
+.sc-title{margin:0;font-family:var(--serif);font-weight:400;font-size:clamp(44px,6vw,96px);line-height:.95;max-width:780px}
+.sc-stats{display:flex;flex-wrap:wrap;gap:20px 44px;margin:0}
+.sc-stats div{min-width:96px}
+.sc-stats dt{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--on-dark)}
+.sc-stats dd{margin:6px 0 0;font-family:var(--serif);font-size:30px;line-height:1}
+.sc-stats dd small{font-family:var(--sans);font-size:13px;margin-left:4px}
+.sc-ui{display:flex;align-items:center;gap:10px}
+.arrow{width:48px;height:48px;border-radius:999px;border:1px solid rgba(244,242,235,.5);background:none;color:var(--ground);cursor:pointer;display:grid;place-items:center;transition:background .3s,color .3s}
+.arrow:hover{background:var(--ground);color:var(--ink)}
+.sc-links{display:flex;gap:10px;flex-wrap:wrap}
+.pill{display:inline-flex;align-items:center;min-height:48px;padding:0 24px;border-radius:999px;text-decoration:none;font-size:12px;letter-spacing:.18em;text-transform:uppercase;transition:background .3s,color .3s}
+.pill.light{background:var(--ground);color:var(--ink)} .pill.light:hover{background:#fff}
+.pill.line{border:1px solid currentColor} .pill.line:hover{background:var(--ink);color:var(--ground)}
+.pill.line-light{border:1px solid rgba(244,242,235,.55);color:var(--ground)} .pill.line-light:hover{background:var(--ground);color:var(--ink)}
+.pill.dark{background:var(--ink);color:var(--ground)} .pill.dark:hover{background:#38352f}
+
+/* ───────── calm (process promises) */
+.calm{padding:clamp(96px,14vh,160px) var(--pad)}
+.calm-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:32px 80px;padding-bottom:56px;border-bottom:1px solid var(--line)}
+.calm-head h2{margin:0;font-family:var(--serif);font-weight:400;font-size:clamp(44px,5.6vw,92px);line-height:.96}
+.calm-head .side{max-width:360px;display:flex;flex-direction:column;gap:24px;align-items:flex-start}
+.calm-head .side p{margin:0;color:var(--body)}
+.row{display:grid;grid-template-columns:minmax(60px,.4fr) minmax(0,1.3fr) minmax(0,1.1fr);gap:24px 40px;padding:36px 0;border-bottom:1px solid var(--line);align-items:start}
+.row .n{font-family:var(--serif);font-style:italic;font-size:30px;line-height:1;color:var(--muted)}
+.row h3{margin:0 0 12px;font-family:var(--serif);font-weight:400;font-size:clamp(30px,2.8vw,44px);line-height:1.05}
+.row p{margin:0;max-width:440px;color:var(--body)}
+.row .m{position:relative;overflow:hidden;aspect-ratio:16/10;background:var(--ground-2)}
+.row .m img{width:100%;height:100%;object-fit:cover}
+.row .m.board{background:#fff}
+.row .m.board img{object-fit:contain;padding:10px}
+.row .veil{position:absolute;inset:0;background:var(--ground)}
+
+/* ───────── approach (pinned horizontal) */
+.approach{position:relative;height:100vh;height:100svh;overflow:hidden;background:var(--accent);color:var(--ground)}
+.ap-head{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:0 var(--pad);pointer-events:none}
+.ap-head .cap{color:var(--on-dark);margin:0 0 28px}
+.ap-head h2{margin:0;font-family:var(--serif);font-weight:400;font-size:clamp(48px,7vw,120px);line-height:.95}
+.ap-l{display:block}
+.ap-r{display:block;text-align:right;font-style:italic}
+.ap-track{position:absolute;left:0;top:50%;transform:translateY(-50%);display:flex;gap:4vw;padding:0 8vw 0 6vw;transform-origin:0 50%;opacity:0}
+.ap-panel{flex:0 0 min(78vw,980px);display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:28px;align-items:end}
+.ap-txt .n{font-family:var(--serif);font-style:italic;font-size:30px;color:#C9A86A}
+.ap-txt h3{margin:8px 0 14px;font-family:var(--serif);font-weight:400;font-size:clamp(48px,5vw,84px);line-height:.95}
+.ap-txt p{margin:0;max-width:340px;color:var(--on-dark)}
+.ap-imgs{position:relative;height:min(62vh,560px)}
+.ap-imgs .ph{position:absolute;right:0;top:0;width:72%;height:82%;overflow:hidden;border-radius:4px}
+.ap-imgs .bd{position:absolute;left:0;bottom:0;width:56%;aspect-ratio:16/10;background:#fff;padding:8px;border-radius:4px;box-shadow:0 20px 50px rgba(0,0,0,.25)}
+.ap-imgs img{width:100%;height:100%;object-fit:cover}
+.ap-imgs .bd img{object-fit:contain}
+
+/* ───────── about stack */
+.about{display:flex;flex-wrap:wrap;gap:48px 64px;padding:clamp(96px,14vh,160px) var(--pad) 40px}
+.about-l{flex:1 1 340px;min-width:0}
+.about-l .in{position:sticky;top:16vh}
+.about-l h2{margin:0 0 28px;font-family:var(--serif);font-weight:400;font-size:clamp(48px,6vw,104px);line-height:.95}
+.about-l p{margin:0 0 28px;max-width:420px;color:var(--body)}
+.about-r{flex:1.3 1 480px;min-width:0;padding-bottom:10vh}
+.scard{position:sticky;height:68vh;min-height:420px;border-radius:8px;overflow:hidden;margin-bottom:6vh;color:#fff;transform-origin:50% 0}
+.scard:nth-child(1){top:14vh}.scard:nth-child(2){top:calc(14vh + 22px)}.scard:nth-child(3){top:calc(14vh + 44px)}.scard:nth-child(4){top:calc(14vh + 66px)}
+.scard img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.scard::after{content:"";position:absolute;inset:0;background:rgba(16,15,13,.36)}
+.scard .lbl{position:absolute;z-index:2;left:28px;top:24px;right:28px;display:flex;justify-content:space-between}
+.scard .num{position:absolute;z-index:2;left:24px;bottom:12px;font-family:var(--serif);font-size:clamp(110px,14vw,220px);line-height:.9}
+
+/* ───────── quote */
+.quote{padding:clamp(96px,16vh,180px) var(--pad);display:flex;flex-direction:column;align-items:center;text-align:center}
+.mono{width:96px;height:96px;border-radius:999px;background:var(--accent);color:var(--ground);display:grid;place-items:center;font-family:var(--serif);font-style:italic;font-size:40px;margin-bottom:40px}
+.quote blockquote{margin:0;max-width:1100px;font-family:var(--serif);font-size:clamp(36px,4.6vw,76px);line-height:1.04}
+.quote blockquote .w{opacity:.14}
+.quote .who{margin-top:36px}
+.quote .who b{display:block;font-weight:600}
+.quote .who span{color:var(--muted);font-size:14px}
+
+/* ───────── faq */
+.faq{background:var(--ground-2);padding:clamp(96px,14vh,150px) var(--pad);display:flex;flex-wrap:wrap;gap:40px 80px}
+.faq-l{flex:1 1 320px}
+.faq-l h2{margin:16px 0 0;font-family:var(--serif);font-weight:400;font-size:clamp(44px,5vw,80px);line-height:.98}
+.faq-list{flex:2 1 560px;min-width:0;border-top:1px solid var(--ink)}
+.faq details{border-bottom:1px solid var(--line)}
+.faq summary{display:flex;justify-content:space-between;align-items:center;gap:24px;padding:24px 0;cursor:pointer;list-style:none}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary .q{font-family:var(--serif);font-size:clamp(22px,2vw,30px);line-height:1.2}
+.faq summary .s{flex:none;width:40px;height:40px;border:1px solid var(--line);border-radius:999px;display:grid;place-items:center;transition:transform .4s,background .3s}
+.faq details[open] .s{transform:rotate(45deg);background:var(--ink);color:var(--ground)}
+.faq .a{overflow:hidden}
+.faq .a p{margin:0 0 26px;max-width:640px;color:var(--body)}
+
+/* ───────── footer */
+.footer{background:var(--ink);color:var(--ground);padding:clamp(96px,14vh,150px) var(--pad) 0;overflow:hidden}
+.f-top{display:flex;flex-wrap:wrap;gap:48px 80px;justify-content:space-between}
+.f-cta{flex:1 1 420px}
+.f-cta .cap{color:var(--on-dark)}
+.f-cta h2{margin:18px 0 24px;font-family:var(--serif);font-weight:400;font-size:clamp(52px,6.4vw,110px);line-height:.94}
+.f-cta p{margin:0;max-width:420px;color:var(--on-dark)}
+.f-form{flex:1 1 420px;display:grid;gap:14px;align-content:start}
+.f-form label{display:block;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--on-dark);margin-bottom:6px}
+.f-form input,.f-form textarea{width:100%;background:transparent;border:0;border-bottom:1px solid rgba(244,242,235,.3);color:var(--ground);font:inherit;padding:10px 0 12px;outline:none;transition:border-color .3s}
+.f-form input:focus,.f-form textarea:focus{border-color:var(--ground)}
+.f-form textarea{resize:vertical;min-height:90px}
+.f-form .pill{justify-self:start;margin-top:12px;border:0;cursor:pointer}
+.f-thanks{margin:0;color:var(--ground);font-family:var(--serif);font-size:28px}
+.f-mid{display:flex;flex-wrap:wrap;justify-content:space-between;gap:24px;margin-top:96px;padding:24px 0;border-top:1px solid rgba(244,242,235,.16);font-size:14px;color:var(--on-dark)}
+.f-mid nav{display:flex;flex-wrap:wrap;gap:4px 28px}
+.f-mid a{text-decoration:none;padding:8px 0}
+.f-mid a:hover{color:var(--ground)}
+.f-word{font-family:var(--serif);font-style:italic;font-size:27vw;line-height:.78;letter-spacing:-.02em;text-align:center;margin:20px 0 0;transform:translateY(12%)}
+
+@media (max-width:860px){
+  .header-right .hbtn[href]{display:none}
+  .art{height:auto;display:flex;flex-direction:column;gap:28px;padding:96px 0 72px}
+  .art>*{position:relative!important;left:auto!important;top:auto!important}
+  .art-cap{order:-1}
+  .art-w{font-size:19vw}
+  .art-w.r{align-self:flex-end}
+  .pl{width:64%!important}
+  .pl.r{align-self:flex-end;width:50%!important}
+  .reg{display:none}
+  .row{grid-template-columns:44px minmax(0,1fr)}
+  .row .m{grid-column:1 / -1}
+  .approach{height:auto;overflow:visible;padding:96px 0}
+  .ap-head{position:relative;padding-bottom:56px}
+  .ap-track{position:relative;top:auto;transform:none;opacity:1;flex-direction:column;gap:72px;padding:0 var(--pad)}
+  .ap-panel{flex:none;grid-template-columns:1fr}
+  .ap-imgs{height:72vw}
+  .sc-top{padding-top:84px}
+}
+@media (prefers-reduced-motion:reduce){
+  .ap-track{opacity:1}
+  .quote blockquote .w{opacity:1}
+  .row .veil{display:none}
+  .hero-shade{opacity:1}
+}
+</style>
+</head>
+<body>
+
+<header class="site-header" id="header">
+  <a class="logo" href="#top" aria-label="Fresca Interior Design, home"><b>Fresca</b><span>Interior Design</span></a>
+  <div class="header-right">
+    <button class="hbtn" type="button" id="menuBtn" aria-expanded="false" aria-controls="menu"><i aria-hidden="true"></i>Menu</button>
+    <a class="hbtn" href="#contact">Book a consultation</a>
+  </div>
+</header>
+
+<div class="menu" id="menu" inert>
+  <div class="menu-top">
+    <a class="logo" href="#top"><b>Fresca</b><span>Interior Design</span></a>
+    <button class="hbtn" type="button" id="menuClose">Close</button>
+  </div>
+  <nav class="menu-links" aria-label="Main">
+    <span class="ln"><a href="#about"><small>01</small>Studio</a></span>
+    <span class="ln"><a href="#work"><small>02</small>Projects</a></span>
+    <span class="ln"><a href="#process"><small>03</small>Process</a></span>
+    <span class="ln"><a href="#about-us"><small>04</small>About</a></span>
+    <span class="ln"><a href="#faq"><small>05</small>FAQ</a></span>
+    <span class="ln"><a href="#contact"><small>06</small>Contact</a></span>
+  </nav>
+  <div class="menu-foot">
+    <span>San Diego, California</span>
+    <a href="tel:+18585550142">(858) 555-0142</a>
+    <a href="mailto:hello@frescainteriordesign.com">hello@frescainteriordesign.com</a>
+  </div>
+</div>
+
+<main>
+<!-- HERO ──────────────────────────────── -->
+<section class="hero" id="top">
+  <div class="hero-media" id="heroMedia">
+    <img src="{{IMG:5}}" alt="">
+    <img src="{{IMG:42}}" alt="">
+    <img src="{{IMG:29}}" alt="">
+    <img src="{{IMG:6}}" alt="">
+    <img src="{{IMG:3}}" alt="">
+    <img src="{{IMG:1}}" alt="White shaker kitchen with a black range hood, marble island and three glass pendants" id="heroFinal">
+    <div class="hero-shade" id="heroShade"></div>
+  </div>
+  <div class="intro-ui" id="introUi" aria-hidden="true">
+    <span class="cap">Fresca · Interior Design</span>
+    <span class="count" id="count">000</span>
+  </div>
+  <div class="hero-content" id="heroContent">
+    <p class="cap hero-fade">Residential interiors · San Diego</p>
+    <h1><span class="ln hero-ln"><span>Interiors that</span></span><span class="ln hero-ln"><span><em>feel fresh.</em></span></span></h1>
+    <p class="hero-fade">Kitchens, bathrooms and whole homes, designed from the floor plan up.</p>
+  </div>
+  <div class="scroll-cue cap hero-fade" aria-hidden="true"><i></i>Scroll</div>
+</section>
+
+<!-- STUDIO / EXHIBITION WALL ──────── -->
+<section class="art" id="about" aria-label="The studio">
+  <h2 class="sr-only">A fresh home, considered.</h2>
+  <div class="art-cap cap"><span>(01) The studio</span><span>Index of rooms · 01–07</span></div>
+  <span class="reg" style="--x:30%;--y:12%" aria-hidden="true"></span>
+  <span class="reg" style="--x:96%;--y:44%" aria-hidden="true"></span>
+  <span class="reg" style="--x:52%;--y:66%" aria-hidden="true"></span>
+  <span class="reg" style="--x:2%;--y:96%" aria-hidden="true"></span>
+  <span class="art-w" style="--x:3%;--y:11%" data-speed=".55" aria-hidden="true"><span class="ln rv"><span>A fresh</span></span></span>
+  <a class="pl " href="#work" style="--x:42%;--y:7%;--w:21%" data-speed="1.25"><div class="f" style="--ar:4/5"><img src="{{IMG:2}}" alt="Black-Hood Kitchen"></div><span class="lab"><span>Pl. 01</span><b>Black-Hood Kitchen</b><span>Rancho Bernardo</span></span></a>
+  <a class="pl r" href="#work" style="--x:79%;--y:17%;--w:13%" data-speed="1.9"><div class="f" style="--ar:3/4"><img src="{{IMG:37}}" alt="Blush Guest Bedroom"></div><span class="lab"><span>Pl. 02</span><b>Blush Guest Bedroom</b><span>Poway</span></span></a>
+  <span class="art-w r" style="--x:62%;--y:35%" data-speed=".85" aria-hidden="true"><span class="ln rv"><span>home,</span></span></span>
+  <a class="pl " href="#work" style="--x:7%;--y:35%;--w:15%" data-speed="1.45"><div class="f" style="--ar:3/4"><img src="{{IMG:31}}" alt="Navy Double Vanity"></div><span class="lab"><span>Pl. 03</span><b>Navy Double Vanity</b><span>Carmel Valley</span></span></a>
+  <p class="art-p" style="--x:30%;--y:45%" data-speed="1">Fresca is a residential design studio in San Diego. We design kitchens, baths and whole homes around how you actually live in them.</p>
+  <a class="pl r" href="#work" style="--x:61%;--y:50%;--w:25%" data-speed="1.05"><div class="f" style="--ar:4/5"><img src="{{IMG:43}}" alt="Two-Story Living Room"></div><span class="lab"><span>Pl. 04</span><b>Two-Story Living Room</b><span>Carmel Valley</span></span></a>
+  <span class="art-w" style="--x:2%;--y:61%" data-speed=".7" aria-hidden="true"><span class="ln rv"><span><em>considered.</em></span></span></span>
+  <a class="pl " href="#work" style="--x:47%;--y:74%;--w:13%" data-speed="1.8"><div class="f" style="--ar:1/1"><img src="{{IMG:7}}" alt="Orb Pendant Kitchen"></div><span class="lab"><span>Pl. 05</span><b>Orb Pendant Kitchen</b><span>Poway</span></span></a>
+  <a class="pl r" href="#work" style="--x:86%;--y:77%;--w:11%" data-speed="1.65"><div class="f" style="--ar:3/4"><img src="{{IMG:34}}" alt="Walnut Guest Bath"></div><span class="lab"><span>Pl. 06</span><b>Walnut Guest Bath</b><span>Encinitas</span></span></a>
+  <a class="pl " href="#work" style="--x:12%;--y:83%;--w:17%" data-speed="1.3"><div class="f" style="--ar:1/1"><img src="{{IMG:4}}" alt="Bay Window Dining"></div><span class="lab"><span>Pl. 07</span><b>Bay Window Dining</b><span>Rancho Bernardo</span></span></a>
+  <p class="art-p" style="--x:55%;--y:88%" data-speed="1.15">One designer carries every project from the first walkthrough to installation day, so the finished room looks the way it did on paper.<br><a href="#work">View selected work →</a></p>
+</section>
+
+<!-- PROJECT SHOWCASE ──────────────────── -->
+<section class="showcase" id="work" aria-label="Selected projects">
+  <div class="sc-sticky">
+    <div class="sc-panel" id="scPanel">
+      <div class="sc-ghost g1" aria-hidden="true"><img alt="" id="ghost1"></div>
+      <div class="sc-ghost g2" aria-hidden="true"><img alt="" id="ghost2"></div>
+      <div class="sc-media" id="scMedia">
+        <img class="sc-img on" src="{{IMG:42}}" alt="Vaulted living room with cognac leather sofas and woven chairs">
+        <img class="sc-img" src="{{IMG:9}}" alt="Modern kitchen with white gloss cabinets and charcoal counters">
+        <img class="sc-img" src="{{IMG:41}}" alt="Family room with mosaic fireplace and blue art">
+        <img class="sc-img" src="{{IMG:38}}" alt="Bedroom with reclaimed wood wall and tufted headboard">
+        <div class="sc-shade" id="scShade"></div>
+      </div>
+      <div class="sc-chess l" aria-hidden="true"></div><div class="sc-chess r" aria-hidden="true"></div>
+      <div class="sc-top sc-fade">
+        <span class="cap">(02) Selected work</span>
+        <span class="sc-count" aria-live="polite"><span id="scNum">01</span> / 04</span>
+      </div>
+      <div class="sc-info">
+        <div>
+          <div class="sc-title-mask"><h3 class="sc-title" id="scTitle">Cognac &amp; Linen Living Room</h3></div>
+          <dl class="sc-stats sc-fade" id="scStats" style="margin-top:24px">
+            <div><dt>Completed in</dt><dd><span id="stWeeks">10</span><small>weeks</small></dd></div>
+            <div><dt>Area</dt><dd><span id="stArea">640</span><small>sq ft</small></dd></div>
+            <div><dt>Location</dt><dd id="stCity">Encinitas</dd></div>
+          </dl>
+        </div>
+        <div class="sc-ui sc-fade">
+          <button class="arrow" type="button" id="scPrev" aria-label="Previous project"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M10 3 5 8l5 5"/></svg></button>
+          <button class="arrow" type="button" id="scNext" aria-label="Next project"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="m6 3 5 5-5 5"/></svg></button>
+          <a class="pill light" href="#work">View project</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CALM ROWS ─────────────────────────── -->
+<section class="calm" id="process">
+  <div class="calm-head">
+    <div>
+      <p class="cap" style="margin:0 0 20px;color:var(--muted)">(03) Working with us</p>
+      <h2><span class="ln rv"><span>Clear plans.</span></span><span class="ln rv"><span><em>Calm remodels.</em></span></span></h2>
+    </div>
+    <div class="side">
+      <p>You always know what is happening, when, and what it costs. That is how we protect your budget, your schedule and your peace of mind.</p>
+      <a class="pill dark" href="#contact">Book a consultation</a>
+    </div>
+  </div>
+  <div class="row"><span class="n">01</span><div><h3>One designer, start to finish</h3><p>The person who measures your kitchen is the person who approves the tile on site. No handoffs, no lost details.</p></div><div class="m"><img src="{{IMG:26}}" alt="Freestanding tub in a gray tile alcove"><div class="veil"></div></div></div>
+  <div class="row"><span class="n">02</span><div><h3>Plans before purchases</h3><p>Floor plans, elevations and a fixture schedule are approved before anything is ordered, so nothing is guessed at once work begins.</p></div><div class="m board"><img src="{{IMG:24}}" alt="Lighting fixture selection sheet organized by room"><div class="veil"></div></div></div>
+  <div class="row"><span class="n">03</span><div><h3>Costs agreed up front</h3><p>Every selection is priced and signed off before it is ordered. Changes are written down and approved, so the final invoice holds no surprises.</p></div><div class="m"><img src="{{IMG:34}}" alt="Bathroom with walnut vanity, glass shower and round mirror"><div class="veil"></div></div></div>
+  <div class="row"><span class="n">04</span><div><h3>On site through installation</h3><p>We visit the job site through construction and walk the finished room with you, so the design survives the build.</p></div><div class="m"><img src="{{IMG:5}}" alt="Kitchen with a long walnut island and white quartz top"><div class="veil"></div></div></div>
+</section>
+
+<!-- APPROACH (pinned horizontal) ──────── -->
+<section class="approach" id="approach" aria-label="Our approach">
+  <div class="ap-head">
+    <p class="cap ap-l">(04) Approach</p>
+    <h2><span class="ap-l">Plan the space,</span><span class="ap-r">then make it beautiful.</span></h2>
+  </div>
+  <div class="ap-track" id="apTrack">
+    <div class="ap-panel">
+      <div class="ap-txt"><span class="n">01</span><h3>Plan</h3><p>We start with how you move through the house: where you cook, gather and put things down. The floor plan comes before any finish.</p></div>
+      <div class="ap-imgs"><div class="ph"><img src="{{IMG:3}}" alt="Great room with navy swivel chairs and linear fireplace"></div><div class="bd"><img src="{{IMG:23}}" alt="Color floor plan of a two-story home"></div></div>
+    </div>
+    <div class="ap-panel">
+      <div class="ap-txt"><span class="n">02</span><h3>Design</h3><p>Cabinetry, stone, tile and paint are chosen together on one board, so every surface agrees with the one beside it.</p></div>
+      <div class="ap-imgs"><div class="ph"><img src="{{IMG:7}}" alt="Kitchen with blue-gray island and patterned tile backsplash"></div><div class="bd"><img src="{{IMG:21}}" alt="Kitchen material and elevation board"></div></div>
+    </div>
+    <div class="ap-panel">
+      <div class="ap-txt"><span class="n">03</span><h3>Light</h3><p>Each fixture is placed on a ceiling plan with the room’s daylight in mind, so the space works at noon and at night.</p></div>
+      <div class="ap-imgs"><div class="ph"><img src="{{IMG:6}}" alt="Dining room under an iron orb chandelier"></div><div class="bd"><img src="{{IMG:25}}" alt="Reflected ceiling and lighting plan"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT STACK ───────────────────────── -->
+<section class="about" id="about-us">
+  <div class="about-l"><div class="in">
+    <p class="cap" style="margin:0 0 20px;color:var(--muted)">(05) About us</p>
+    <h2><span class="ln rv"><span>About</span></span><span class="ln rv"><span><em>Fresca.</em></span></span></h2>
+    <p>Founded by designer Elena Marquez, Fresca works with homeowners across North County and the coast. We take on a small number of projects at a time so each one gets full attention.</p>
+    <a class="pill line" href="#work">View projects</a>
+  </div></div>
+  <div class="about-r">
+    <div class="scard"><img src="{{IMG:40}}" alt="Bedroom with iron bed and floral bedding"><div class="lbl cap"><span>Years in practice</span><span>01</span></div><span class="num">12</span></div>
+    <div class="scard"><img src="{{IMG:44}}" alt="Living room with sectional and tall windows"><div class="lbl cap"><span>Rooms designed</span><span>02</span></div><span class="num">140+</span></div>
+    <div class="scard"><img src="{{IMG:32}}" alt="Bathroom with hammered sinks and lantern sconce"><div class="lbl cap"><span>Neighborhoods served</span><span>03</span></div><span class="num">9</span></div>
+    <div class="scard"><img src="{{IMG:39}}" alt="Sitting room with bay windows and fireplace"><div class="lbl cap"><span>Clients who came back</span><span>04</span></div><span class="num">1 in 3</span></div>
+  </div>
+</section>
+
+<!-- QUOTE ─────────────────────────────── -->
+<section class="quote" aria-label="From the founder">
+  <div class="mono" aria-hidden="true">EM</div>
+  <blockquote id="quote">“A finished room should feel inevitable, as if it could never have been any other way.”</blockquote>
+  <div class="who"><b>Elena Marquez</b><span>Founder &amp; principal designer</span></div>
+</section>
+
+<!-- FAQ ───────────────────────────────── -->
+<section class="faq" id="faq">
+  <div class="faq-l"><p class="cap" style="margin:0;color:var(--muted)">(06) FAQ</p><h2>Questions clients ask</h2></div>
+  <div class="faq-list">
+    <details open><summary><span class="q">What does a design project include?</span><span class="s" aria-hidden="true">+</span></summary><div class="a"><p>A full project includes a measured floor plan, a materials and finishes board, elevations for kitchens and baths, a lighting plan, and a product list with every item specified. Smaller projects can include only the pieces you need.</p></div></details>
+    <details><summary><span class="q">Do you manage the remodel, or only the design?</span><span class="s" aria-hidden="true">+</span></summary><div class="a"><p>We design and document the project, then work alongside your contractor through construction. If you don’t have a contractor yet, we can recommend ones we have worked with before.</p></div></details>
+    <details><summary><span class="q">How is a project priced?</span><span class="s" aria-hidden="true">+</span></summary><div class="a"><p>Design is billed as a flat fee based on the size and scope of the project, which we set after the first consultation. Construction and furnishings are paid directly to your contractor and vendors.</p></div></details>
+    <details><summary><span class="q">How long does a kitchen or bathroom take?</span><span class="s" aria-hidden="true">+</span></summary><div class="a"><p>Design usually takes four to eight weeks. Construction depends on the contractor and materials, but most kitchens take two to four months and most bathrooms six to ten weeks.</p></div></details>
+    <details><summary><span class="q">Do you take on single rooms?</span><span class="s" aria-hidden="true">+</span></summary><div class="a"><p>Yes. Many projects start with one kitchen or bathroom, and the process is the same whether it’s one room or the whole house.</p></div></details>
+  </div>
+</section>
+</main>
+
+<!-- FOOTER ────────────────────────────── -->
+<footer class="footer" id="contact">
+  <div class="f-top">
+    <div class="f-cta">
+      <p class="cap">(07) Get in touch</p>
+      <h2><span class="ln rv"><span>Start with a</span></span><span class="ln rv"><span><em>conversation.</em></span></span></h2>
+      <p>Share a few details about your home and what you would like to change. We reply within two business days.</p>
+    </div>
+    <form class="f-form" id="form" novalidate>
+      <div><label for="fn">Name</label><input id="fn" name="name" autocomplete="name"></div>
+      <div><label for="fe">Email</label><input id="fe" name="email" type="email" autocomplete="email"></div>
+      <div><label for="fm">About your project</label><textarea id="fm" name="message" rows="3"></textarea></div>
+      <button class="pill light" type="submit">Send inquiry</button>
+    </form>
+  </div>
+  <div class="f-mid">
+    <nav aria-label="Footer"><a href="#about">Studio</a><a href="#work">Projects</a><a href="#process">Process</a><a href="#faq">FAQ</a><a href="#contact">@frescainteriordesign</a></nav>
+    <span><a href="tel:+18585550142">(858) 555-0142</a> · <a href="mailto:hello@frescainteriordesign.com">hello@frescainteriordesign.com</a></span>
+    <span>© 2026 Fresca Interior Design</span>
+  </div>
+  <p class="f-word" aria-hidden="true">Fresca</p>
+</footer>
+
+<script>{{LIB:gsap}}</script>
+<script>{{LIB:st}}</script>
+<script>{{LIB:lenis}}</script>
+<script>
+(function(){
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var hasGsap = !!window.gsap;
+  var $ = function(s,c){return (c||document).querySelector(s)};
+  var $$ = function(s,c){return Array.prototype.slice.call((c||document).querySelectorAll(s))};
+
+  /* ── menu */
+  var menu=$('#menu'), menuBtn=$('#menuBtn'), lenis=null;
+  function openMenu(){menu.classList.add('open');menu.removeAttribute('inert');menuBtn.setAttribute('aria-expanded','true');if(lenis)lenis.stop();
+    if(hasGsap&&!reduce)gsap.fromTo('.menu-links a',{yPercent:110},{yPercent:0,duration:.9,stagger:.06,ease:'power3.out',delay:.25});
+    setTimeout(function(){$('#menuClose').focus()},300);}
+  function closeMenu(){if(!menu.classList.contains('open'))return;menu.classList.remove('open');menu.setAttribute('inert','');menuBtn.setAttribute('aria-expanded','false');if(lenis)lenis.start();}
+  menuBtn.addEventListener('click',openMenu);
+  $('#menuClose').addEventListener('click',function(){closeMenu();menuBtn.focus()});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')closeMenu()});
+
+  /* ── anchors */
+  $$('a[href^="#"]').forEach(function(a){a.addEventListener('click',function(e){var id=a.getAttribute('href');if(id.length<2)return;var t=$(id);if(!t)return;e.preventDefault();closeMenu();var dest=t;if(t.classList.contains('showcase')&&hasGsap&&!reduce)dest=t.offsetTop+t.offsetHeight-innerHeight;if(lenis)lenis.scrollTo(dest,{duration:1.6});else t.scrollIntoView({behavior:reduce?'auto':'smooth'});});});
+
+  /* ── form (demo) */
+  $('#form').addEventListener('submit',function(e){e.preventDefault();var f=e.target;f.innerHTML='<p class="f-thanks">Thank you. We’ll be in touch within two business days.</p>';});
+
+  /* ── faq: one open at a time */
+  var dets=$$('.faq details');
+  dets.forEach(function(d){d.addEventListener('toggle',function(){if(d.open)dets.forEach(function(o){if(o!==d)o.open=false})})});
+
+  /* ── project slider data */
+  var projects=[
+    {t:'Cognac & Linen Living Room',w:'10',a:'640',c:'Encinitas'},
+    {t:'Hillside Gloss Kitchen',w:'14',a:'420',c:'Poway'},
+    {t:'Coastal Blue Family Room',w:'8',a:'510',c:'Carmel Valley'},
+    {t:'Reclaimed Wood Primary Suite',w:'12',a:'380',c:'Rancho Bernardo'}
+  ];
+  var slides=$$('.sc-img'), cur=0, busy=false;
+  function setGhosts(i){var s=slides[i].getAttribute('src');$('#ghost1').src=s;$('#ghost2').src=s;}
+  setGhosts(0);
+  function fill(i){var p=projects[i];$('#scTitle').textContent=p.t;$('#stWeeks').textContent=p.w;$('#stArea').textContent=p.a;$('#stCity').textContent=p.c;$('#scNum').textContent='0'+(i+1);}
+  function go(dir){
+    if(busy)return;var n=(cur+dir+slides.length)%slides.length,prev=slides[cur],next=slides[n];
+    if(!hasGsap||reduce){prev.classList.remove('on');next.classList.add('on');cur=n;fill(n);setGhosts(n);return;}
+    busy=true;
+    gsap.set(next,{opacity:1,zIndex:2,clipPath:dir>0?'inset(0 0 0 100%)':'inset(0 100% 0 0)'});
+    gsap.to(next,{clipPath:'inset(0 0% 0 0%)',duration:1.2,ease:'power3.inOut',onComplete:function(){prev.classList.remove('on');gsap.set(prev,{opacity:0,zIndex:0});next.classList.add('on');gsap.set(next,{zIndex:1,clearProps:'clipPath'});busy=false;}});
+    gsap.fromTo(next,{scale:1.15},{scale:1,duration:1.6,ease:'power3.out'});
+    gsap.to('#scTitle',{yPercent:-110,duration:.45,ease:'power2.in',onComplete:function(){fill(n);gsap.fromTo('#scTitle',{yPercent:110},{yPercent:0,duration:.8,ease:'power3.out'});}});
+    gsap.fromTo('#scStats dd',{opacity:1},{opacity:0,duration:.3,yoyo:true,repeat:1,repeatDelay:.25});
+    cur=n;setGhosts(n);
+  }
+  $('#scNext').addEventListener('click',function(){go(1)});
+  $('#scPrev').addEventListener('click',function(){go(-1)});
+
+  /* ── quote words */
+  var q=$('#quote');q.innerHTML=q.textContent.split(' ').map(function(w){return '<span class="w">'+w+'</span>'}).join(' ');
+
+  if(!hasGsap||reduce){
+    $('#heroShade').style.opacity=1;$('#introUi').style.display='none';
+    $$('.sc-fade,#scShade').forEach(function(e){e.style.opacity=1});
+    return;
+  }
+
+  /* ───────── motion */
+  gsap.registerPlugin(ScrollTrigger);
+  if(window.Lenis){
+    lenis=new Lenis({lerp:.09});
+    lenis.on('scroll',ScrollTrigger.update);
+    gsap.ticker.add(function(t){lenis.raf(t*1000)});
+    gsap.ticker.lagSmoothing(0);
+  }
+
+  /* intro: photos cycle in a small frame, then it opens to full screen */
+  var heroImgs=$$('.hero-media img');
+  document.documentElement.classList.add('is-loading');
+  if(lenis)lenis.stop();
+  gsap.set('#heroMedia',{clipPath:'inset(37% 41.5% 37% 41.5% round 3px)'});
+  gsap.set(heroImgs,{autoAlpha:0});gsap.set(heroImgs[0],{autoAlpha:1});
+  gsap.set('.hero-ln > span',{yPercent:110});
+  gsap.set('.hero-fade',{autoAlpha:0,y:14});
+  gsap.set('#header',{autoAlpha:0});
+  var cnt={v:0},countEl=$('#count');
+  var intro=gsap.timeline({defaults:{ease:'power3.inOut'}});
+  intro.to(cnt,{v:100,duration:2,ease:'power1.inOut',onUpdate:function(){countEl.textContent=String(Math.round(cnt.v)).padStart(3,'0')}},0);
+  heroImgs.forEach(function(img,i){if(i)intro.set(img,{autoAlpha:1},.33*i)});
+  intro.to('#introUi',{autoAlpha:0,duration:.4,ease:'power1.out'},2.05)
+    .to('#heroMedia',{clipPath:'inset(0% 0% 0% 0% round 0px)',duration:1.5},2.1)
+    .fromTo('#heroFinal',{scale:1.35},{scale:1.06,duration:1.9,ease:'power3.out'},2.1)
+    .to('#heroShade',{opacity:1,duration:1,ease:'power1.out'},2.6)
+    .to('.hero-ln > span',{yPercent:0,duration:1.2,stagger:.1,ease:'power4.out'},2.95)
+    .to('.hero-fade',{autoAlpha:1,y:0,duration:.9,stagger:.08,ease:'power2.out'},3.2)
+    .to('#header',{autoAlpha:1,duration:.8,ease:'power1.out'},3.2)
+    .add(function(){document.documentElement.classList.remove('is-loading');if(lenis)lenis.start();ScrollTrigger.refresh();},3.4);
+
+  /* hero parallax on scroll */
+  gsap.to('#heroFinal',{yPercent:14,ease:'none',scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:true}});
+  gsap.to('#heroContent',{yPercent:-40,opacity:0,ease:'none',scrollTrigger:{trigger:'.hero',start:'top top',end:'70% top',scrub:true}});
+
+  /* masked line reveals */
+  $$('.rv').forEach(function(l){gsap.from(l.firstElementChild,{yPercent:110,duration:1.2,ease:'power4.out',scrollTrigger:{trigger:l,start:'top 88%'}})});
+
+  /* studio wall: every piece drifts up at its own speed, photos unmask on entry */
+  $$('.pl').forEach(function(pl){
+    gsap.from(pl.querySelector('.f'),{clipPath:'inset(100% 0 0 0)',duration:1.4,ease:'power3.out',scrollTrigger:{trigger:pl,start:'top 92%'}});
+    gsap.from(pl.querySelector('.lab'),{opacity:0,y:8,duration:.8,delay:.35,ease:'power2.out',scrollTrigger:{trigger:pl,start:'top 92%'}});
+    gsap.fromTo(pl.querySelector('img'),{yPercent:-8},{yPercent:8,ease:'none',scrollTrigger:{trigger:pl,start:'top bottom',end:'bottom top',scrub:.8}});
+  });
+  $$('.art-p').forEach(function(el){gsap.from(el,{opacity:0,y:20,duration:1,ease:'power2.out',scrollTrigger:{trigger:el,start:'top 88%'}})});
+  gsap.matchMedia().add('(min-width: 861px)',function(){
+    $$('.art [data-speed]').forEach(function(el){
+      var sp=parseFloat(el.dataset.speed);
+      gsap.to(el,{y:function(){return -innerHeight*.24*sp},ease:'none',scrollTrigger:{trigger:'.art',start:'top bottom',end:'bottom top',scrub:.8,invalidateOnRefresh:true}});
+    });
+  });
+
+  /* showcase: chess curtains collapse, frame opens to full panel, details arrive */
+  gsap.fromTo('.sc-chess.l',{height:'65vh'},{height:0,ease:'power2.out',scrollTrigger:{trigger:'.showcase',start:'top bottom',end:'top 30%',scrub:.8}});
+  gsap.fromTo('.sc-chess.r',{height:'25vh'},{height:0,ease:'power2.out',scrollTrigger:{trigger:'.showcase',start:'top bottom',end:'top 45%',scrub:.8}});
+  var sc=gsap.timeline({scrollTrigger:{trigger:'.showcase',start:'top top',end:'bottom bottom',scrub:.8}});
+  sc.fromTo('#scMedia',{clipPath:'inset(24% 28% 24% 28% round 4px)'},{clipPath:'inset(0% 0% 0% 0% round 0px)',duration:3,ease:'power2.out'},0)
+    .fromTo('.sc-img',{scale:1.4},{scale:1,duration:3,ease:'power2.out'},0)
+    .fromTo('.g2',{scale:.65},{scale:1.5,duration:3,ease:'power2.out'},0)
+    .fromTo('.g1',{scale:.65},{scale:1.25,duration:3,ease:'power2.out'},.1)
+    .fromTo('#scShade',{opacity:0},{opacity:1,duration:1},1.6)
+    .fromTo('.sc-title-mask',{yPercent:-40,opacity:0},{yPercent:0,opacity:1,duration:1},1.9)
+    .fromTo('.sc-fade',{opacity:0,y:-24},{opacity:1,y:0,duration:1,stagger:.15},2.1);
+
+  /* calm rows: veil lifts as the row rises */
+  $$('.row').forEach(function(r){
+    var tl=gsap.timeline({scrollTrigger:{trigger:r,start:'top 85%',end:'top 35%',scrub:.8}});
+    tl.fromTo(r.querySelector('.veil'),{opacity:1},{opacity:0,ease:'power2.out'},0)
+      .fromTo(r.querySelector('.m img'),{scale:1.18},{scale:1,ease:'power2.out'},0)
+      .fromTo(r.querySelector('.n'),{color:'#b5afa3'},{color:'#1D1C1A',ease:'none'},0);
+  });
+
+  /* approach: headline splits apart, track scales in then scrolls sideways */
+  var mm=gsap.matchMedia();
+  mm.add('(min-width: 861px)',function(){
+    var track=$('#apTrack');
+    var dist=function(){return track.scrollWidth-innerWidth};
+    var tl=gsap.timeline({scrollTrigger:{trigger:'#approach',start:'top top',end:function(){return '+='+(dist()+innerHeight*1.4)},pin:true,scrub:1,invalidateOnRefresh:true}});
+    tl.to('.ap-l',{xPercent:-40,yPercent:-160,ease:'none',duration:1},0)
+      .to('.ap-r',{xPercent:30,yPercent:160,ease:'none',duration:1},0)
+      .to('.ap-l, .ap-r',{opacity:0,ease:'power1.in',duration:.45},0)
+      .fromTo(track,{scale:.5,opacity:0,x:function(){return innerWidth*.3}},{scale:1,opacity:1,x:0,ease:'power2.out',duration:1.1},.35)
+      .to(track,{x:function(){return -dist()},ease:'none',duration:3},1.35);
+  });
+
+  /* about: each card shrinks and darkens as the next one stacks over it */
+  var cards=$$('.scard');
+  cards.forEach(function(c,i){
+    if(i===cards.length-1)return;
+    gsap.to(c,{scale:.9,filter:'brightness(.55)',ease:'none',scrollTrigger:{trigger:cards[i+1],start:'top bottom',end:'top 20%',scrub:true}});
+  });
+
+  /* quote: words light up with scroll */
+  gsap.to('#quote .w',{opacity:1,stagger:.08,ease:'none',scrollTrigger:{trigger:'.quote',start:'top 70%',end:'bottom 60%',scrub:true}});
+
+  /* footer wordmark rises */
+  gsap.fromTo('.f-word',{yPercent:40},{yPercent:4,ease:'none',scrollTrigger:{trigger:'.footer',start:'center bottom',end:'bottom bottom',scrub:true}});
+
+  addEventListener('load',function(){ScrollTrigger.refresh()});
+})();
+</script>
+</body>
+</html>

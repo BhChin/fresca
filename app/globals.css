@@ -12,6 +12,7 @@
   --accent: #2b3a55;
   --on-dark: #cfc9bc;
   --serif: var(--font-instrument), Georgia, serif;
+  --mono: var(--font-plex-mono), ui-monospace, monospace;
   --sans: var(--font-hanken), system-ui, sans-serif;
   --pad: clamp(16px, 2.2vw, 32px);
 }
@@ -112,4 +113,340 @@ html.intro .hero-fade {
 html:not(.intro) .intro-ui,
 html:not(.intro) .hero-cycle {
   display: none;
+}
+
+/* ───────── studio wall annotations (v6): 12-col grid, ruler, dimension
+   lines and callouts. Ported verbatim from reference/fresca-v6-source.html. */
+.art-grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: linear-gradient(to right, rgba(29, 28, 26, 0.07) 1px, transparent 1px);
+  background-size: calc(100% / 12) 100%;
+  border-right: 1px solid rgba(29, 28, 26, 0.07);
+}
+.art-cols {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  pointer-events: none;
+}
+.art-cols span {
+  padding: 8px 0 0 6px;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  color: rgba(29, 28, 26, 0.4);
+}
+.art-ruler {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--pad) * -1);
+  width: var(--pad);
+  pointer-events: none;
+  background: repeating-linear-gradient(to bottom, rgba(29, 28, 26, 0.22) 0 1px, transparent 1px 1%) right top / 5px 100% no-repeat;
+}
+.art-ruler span {
+  position: absolute;
+  right: 8px;
+  transform: translateY(-50%);
+  font-family: var(--mono);
+  font-size: 8.5px;
+  color: rgba(29, 28, 26, 0.45);
+}
+.art-ruler span::after {
+  content: "";
+  position: absolute;
+  right: -8px;
+  top: 50%;
+  width: 9px;
+  height: 1px;
+  background: rgba(29, 28, 26, 0.45);
+}
+.fr {
+  position: relative;
+}
+.dim {
+  position: absolute;
+  z-index: 3;
+  color: rgba(29, 28, 26, 0.55);
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.dim .dl {
+  position: absolute;
+  background: currentColor;
+}
+.dim em {
+  position: absolute;
+  font-style: normal;
+  background: var(--ground);
+  padding: 0 6px;
+}
+.dim.h {
+  left: 0;
+  right: 0;
+  top: -22px;
+  height: 9px;
+  border-left: 1px solid;
+  border-right: 1px solid;
+}
+.dim.h .dl {
+  left: 0;
+  right: 0;
+  top: 4px;
+  height: 1px;
+  transform-origin: 0 50%;
+}
+.dim.h em {
+  left: 50%;
+  top: 4px;
+  transform: translate(-50%, -50%);
+}
+.dim.v {
+  top: 0;
+  bottom: 0;
+  width: 9px;
+  border-top: 1px solid;
+  border-bottom: 1px solid;
+}
+.dim.v.l {
+  left: -22px;
+}
+.dim.v.r {
+  right: -22px;
+}
+.dim.v .dl {
+  top: 0;
+  bottom: 0;
+  left: 4px;
+  width: 1px;
+  transform-origin: 50% 0;
+}
+.dim.v em {
+  left: 4px;
+  top: 50%;
+  transform: translate(-50%, -50%) rotate(-90deg);
+}
+.co {
+  position: absolute;
+  z-index: 3;
+  left: var(--px);
+  top: var(--py);
+  pointer-events: none;
+}
+.co i {
+  position: absolute;
+  left: -5px;
+  top: -5px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 0 1px var(--ink);
+}
+.co .ll {
+  position: absolute;
+  top: 0;
+  height: 1px;
+  width: var(--len);
+  background: var(--ink);
+}
+.co.l .ll {
+  right: 0;
+  transform-origin: 100% 50%;
+}
+.co.r .ll {
+  left: 0;
+  transform-origin: 0 50%;
+}
+.co .t {
+  position: absolute;
+  top: -7px;
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.co.l .t {
+  right: calc(var(--len) + 8px);
+}
+.co.r .t {
+  left: calc(var(--len) + 8px);
+}
+
+/* ───────── approach blueprint (v6) */
+.blueprint {
+  background-color: var(--accent);
+  background-image: linear-gradient(rgba(244, 242, 235, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(244, 242, 235, 0.045) 1px, transparent 1px),
+    linear-gradient(rgba(244, 242, 235, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(244, 242, 235, 0.1) 1px, transparent 1px);
+  background-size: 24px 24px, 24px 24px, 120px 120px, 120px 120px;
+  background-position: -1px -1px;
+}
+.ap-draw {
+  display: block;
+  width: 100%;
+  max-width: 380px;
+  height: auto;
+  margin: 0 0 22px;
+  overflow: visible;
+}
+.ap-draw .dw {
+  fill: none;
+  stroke: rgba(244, 242, 235, 0.8);
+  stroke-width: 1.2;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 1.8s cubic-bezier(0.6, 0, 0.2, 1);
+}
+.ap-draw .wall {
+  stroke-width: 2.2;
+}
+.ap-draw .fd {
+  fill: none;
+  stroke: rgba(244, 242, 235, 0.45);
+  stroke-width: 1;
+  stroke-dasharray: 3 4;
+  opacity: 0;
+  transition: opacity 1s 1s;
+}
+.ap-draw .dm {
+  stroke: #c9a86a;
+}
+.ap-draw text {
+  font-family: var(--mono);
+  font-size: 10px;
+  fill: #c9a86a;
+  opacity: 0;
+  transition: opacity 0.8s 1.3s;
+}
+.ap-draw text.lbl {
+  fill: rgba(244, 242, 235, 0.6);
+  font-size: 8.5px;
+  letter-spacing: 0.12em;
+}
+.drawn .ap-draw .dw {
+  stroke-dashoffset: 0;
+}
+.drawn .ap-draw .fd,
+.drawn .ap-draw text {
+  opacity: 1;
+}
+.ap-spec {
+  list-style: none;
+  margin: 22px 0 0;
+  padding: 0;
+  max-width: 340px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--on-dark);
+}
+.ap-spec li {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 6px 0;
+  border-top: 1px solid rgba(244, 242, 235, 0.16);
+}
+.ap-spec li span:nth-child(2) {
+  flex: 1;
+  border-bottom: 1px dotted rgba(244, 242, 235, 0.3);
+  transform: translateY(-3px);
+}
+.ap-spec b {
+  font-weight: 400;
+  color: #c9a86a;
+}
+.ap-ruler {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 5vh);
+  height: 30px;
+  background: repeating-linear-gradient(to right, rgba(244, 242, 235, 0.35) 0 1px, transparent 1px 12px) left top / 100% 6px no-repeat,
+    repeating-linear-gradient(to right, rgba(244, 242, 235, 0.7) 0 1px, transparent 1px 120px) left top / 100% 12px no-repeat;
+  border-top: 1px solid rgba(244, 242, 235, 0.35);
+}
+.ap-ruler span {
+  position: absolute;
+  top: 15px;
+  transform: translateX(-50%);
+  font-family: var(--mono);
+  font-size: 9px;
+  color: rgba(244, 242, 235, 0.55);
+}
+.ap-head-r {
+  position: absolute;
+  left: 50%;
+  top: calc(50% + min(31vh, 280px) + 5vh - 22px);
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: #c9a86a;
+  pointer-events: none;
+}
+.ap-head-r i {
+  display: block;
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 7px solid #c9a86a;
+}
+.ap-head-r b {
+  display: block;
+  width: 1px;
+  height: 44px;
+  background: #c9a86a;
+}
+
+@media (max-width: 860px) {
+  .art-grid,
+  .art-cols,
+  .art-ruler,
+  .co,
+  .pl .xy {
+    display: none;
+  }
+  .dim.v.l {
+    left: -16px;
+  }
+  .dim.v.r {
+    right: -16px;
+  }
+}
+/* Ruler and playhead belong to the pinned desktop track only (mobile, and
+   reduced motion, where the panels stack). */
+@media (max-width: 860px), (prefers-reduced-motion: reduce) {
+  .ap-ruler,
+  .ap-head-r {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ap-draw .dw {
+    stroke-dashoffset: 0;
+    transition: none;
+  }
+  .ap-draw .fd,
+  .ap-draw text {
+    opacity: 1;
+    transition: none;
+  }
 }
